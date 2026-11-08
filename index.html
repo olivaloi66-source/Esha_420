@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="bn"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#03070d"><title>ARIM AI</title>
+<style>
+:root{--a:#22d3ee;--p:#07101a;--b:#12303d;--m:#8aa0b3}[data-t=crimson]{--a:#f43f5e}[data-t=emerald]{--a:#10b981}
+*{box-sizing:border-box}body{margin:0;background:#03070d;color:#e6f1f7;font-family:system-ui,sans-serif;min-height:100vh;padding-bottom:70px}
+.mono{font-family:ui-monospace,monospace;letter-spacing:.14em;font-weight:700}
+button,input,textarea{font:inherit}button{cursor:pointer}
+.btn{background:#08202b;color:var(--a);border:1px solid var(--a);border-radius:8px;padding:9px 14px}
+input,textarea{width:100%;background:var(--p);border:1px solid #1d3a48;border-radius:8px;color:#e6f1f7;padding:11px}
+#top{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--b);font-size:13px;color:var(--m)}
+#top b{color:var(--a)}
+#grid{display:grid;gap:12px;padding:12px;grid-template-columns:1fr}
+.sec{border:1px solid var(--b);background:var(--p);border-radius:10px;padding:12px;display:none}
+.ttl{color:var(--a);font-size:11px;margin-bottom:10px}
+body[data-v=home] #s-home,body[data-v=home] #s-hub,body[data-v=chat] #s-chat,body[data-v=media] #s-media,body[data-v=world] #s-world,body[data-v=more] #s-more{display:block}
+#nav{position:fixed;left:0;right:0;bottom:0;height:62px;background:var(--p);border-top:1px solid var(--b);display:flex;justify-content:space-around;align-items:center}
+#nav button{background:none;border:0;color:var(--m);font-size:12px;padding:10px}
+body[data-v=home] #nav [data-g=home],body[data-v=chat] #nav [data-g=chat],body[data-v=media] #nav [data-g=media],body[data-v=world] #nav [data-g=world],body[data-v=more] #nav [data-g=more]{color:var(--a)}
+@media(min-width:900px){#grid{grid-template-columns:270px 1fr 300px;grid-template-areas:"w h c" "w u c" "m m m" "o o o"}
+ .sec{display:block!important}#s-world{grid-area:w}#s-home{grid-area:h}#s-hub{grid-area:u}#s-chat{grid-area:c}#s-media{grid-area:m}#s-more{grid-area:o}#nav{display:none}body{padding-bottom:0}}
+#hm{display:grid;grid-template-columns:104px 36px 1fr;align-items:center}
+.tile{height:58px;margin:6px 0;border:1px solid;border-radius:8px;background:#0a1420;padding:9px 8px;cursor:pointer}
+.tile i{display:block;font:700 9px ui-monospace,monospace;letter-spacing:.12em;font-style:normal}.tile span{font-size:11px;color:#9fb2c2}
+#pn{border:1px solid var(--a);border-radius:10px;background:#06121b;text-align:center;padding:8px 4px}
+.ring{stroke:var(--a)}#log{height:340px;overflow:auto;display:flex;flex-direction:column;gap:8px;font-size:14px}
+.m{max-width:88%;padding:9px 12px;border-radius:12px;border:1px solid var(--b);background:#0a1420;white-space:pre-wrap}.u{align-self:flex-end;background:#0b2a36;border-color:var(--a)}
+.tabs{display:flex;gap:14px;font-size:11px;margin-bottom:10px}.tabs button{background:none;border:0;color:var(--m)}.tabs .on{color:var(--a)}
+.row{display:flex;gap:8px;margin-top:10px}.pr{border-top:1px solid var(--b);padding:9px 0;font-size:13px;cursor:pointer}.pr b{color:var(--a);font-family:ui-monospace,monospace}
+#banner{display:none;background:var(--a);color:#001014;padding:10px;text-align:center;font-size:13px;cursor:pointer}
+.globe{width:150px;height:150px;border-radius:50%;margin:8px auto 14px;background:radial-gradient(circle at 35% 30%,#2f7fb8,#0c2a4d 55%,#050f24);box-shadow:0 0 40px var(--a)}
+img,video,canvas{max-width:100%;border-radius:8px}label.btn{display:inline-block}
+</style></head><body data-v="home">
+<div id="banner"></div>
+<div id="top"><b class="mono">ARIM AI</b><span id="ver"></span></div>
+<div id="grid">
+<section class="sec" id="s-world"><div class="ttl mono">● SAT-LINK FEED</div><div class="globe"></div><div class="ttl mono">TODAY HEADLINES <button class="tabs" style="background:none;border:0;color:var(--m)" onclick="news()">↻</button></div><div id="news"></div></section>
+
+<section class="sec" id="s-home"><div id="hm">
+ <div>
+  <div class="tile" style="border-color:#22d3ee" onclick="go('more')"><i style="color:#22d3ee">MEMORY</i><span id="mc">0 saved</span></div>
+  <div class="tile" style="border-color:#34d399" onclick="go('media')"><i style="color:#34d399">SKILLS</i><span>Chat·Photo·Video</span></div>
+  <div class="tile" style="border-color:#f87171" onclick="alert('Character: ARIM — friendly')"><i style="color:#f87171">CHARACTER</i><span>Friendly</span></div>
+  <div class="tile" style="border-color:#9aa7b4" onclick="go('more')"><i style="color:#9aa7b4">SETTING</i><span>Theme·Voice</span></div>
+ </div>
+ <svg viewBox="0 0 36 270" preserveAspectRatio="none" width="36" height="270" aria-hidden="true"><g fill="none" stroke-width="2" vector-effect="non-scaling-stroke"><polyline points="0,35 14,35 22,100 36,100" stroke="#22d3ee"/><polyline points="0,105 14,105 22,120 36,120" stroke="#34d399"/><polyline points="0,175 14,175 22,150 36,150" stroke="#f87171"/><polyline points="0,245 14,245 22,170 36,170" stroke="#9aa7b4"/></g></svg>
+ <div id="pn">
+  <svg width="150" height="150" viewBox="0 0 260 260" aria-hidden="true"><defs>
+   <pattern id="d" width="4" height="4" patternUnits="userSpaceOnUse"><circle cx="1.5" cy="1.5" r=".9" fill="#5fb6ff"/></pattern>
+   <pattern id="f" width="3" height="3" patternUnits="userSpaceOnUse"><circle cx="1.2" cy="1.2" r=".9" fill="#fff"/></pattern>
+   <filter id="s"><feTurbulence baseFrequency=".8" numOctaves="2" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="12"/></filter></defs>
+   <circle class="ring" cx="130" cy="130" r="122" fill="none" stroke-width="5" stroke-dasharray="2 10"/>
+   <g filter="url(#s)"><path d="M130 34c-42 0-64 28-64 66 0 30-8 52-18 74-6 14-2 30 8 40h148c10-10 14-26 8-40-10-22-18-44-18-74 0-38-22-66-64-66z" fill="url(#d)"/><ellipse cx="130" cy="98" rx="27" ry="36" fill="url(#f)"/></g></svg>
+  <div id="st" style="font-size:12px;color:#c9d6df">● ARIM is ready</div>
+  <div class="row" style="justify-content:center"><button class="btn mono" style="border-color:#f87171;color:#f87171;background:#1a0b0e;font-size:11px" onclick="stopAll()">TERMINATE</button><button class="btn" aria-label="Mic" onclick="mic()">MIC</button></div>
+ </div></div></section>
+
+<section class="sec" id="s-hub"><div class="ttl mono">● VISUAL HUB</div><div id="hubout" style="text-align:center;font-size:13px;color:var(--m)">What do you want to see? Tap one or type below.</div>
+ <div class="pr" onclick="hub('rocket blueprint')"><b>01</b>&nbsp; Draw a rocket blueprint</div><div class="pr" onclick="hub('black hole bending light')"><b>02</b>&nbsp; Show how a black hole bends light</div><div class="pr" onclick="hub('fusion reactor inside')"><b>03</b>&nbsp; Look inside a fusion reactor</div><div class="pr" onclick="hub('crewed mission to Mars')"><b>04</b>&nbsp; Plan a crewed mission to Mars</div>
+ <div class="row"><input id="hq" placeholder="Describe what to draw..."><button class="btn" onclick="hub($('hq').value)">Draw</button></div></section>
+
+<section class="sec" id="s-chat"><div class="tabs mono"><button class="on" id="tv" onclick="tab('v')">VOICE</button><button id="ta" onclick="tab('a')">AGENT</button><button id="tn" onclick="tab('n')">NOTES</button></div>
+ <div id="pv"><div id="log"></div><div class="row"><button class="btn" aria-label="Attach photo or video" onclick="go('media')">📎</button><input id="t" placeholder="Type to ARIM..." onkeydown="if(event.key==='Enter')send()"><button class="btn" aria-label="Send" onclick="send()">↑</button></div></div>
+ <div id="pa" style="display:none;font-size:13px;color:var(--m)">Agents are planned for the next phase.</div>
+ <div id="pnote" style="display:none"><textarea id="nt" rows="12" placeholder="Your notes (saved on this device)" oninput="localStorage.nt=this.value"></textarea></div></section>
+
+<section class="sec" id="s-media"><div class="ttl mono">PHOTO &amp; VIDEO STUDIO</div>
+ <label class="btn">Choose photo<input id="pf" type="file" accept="image/*" hidden></label> <label class="btn">Choose video<input id="vf" type="file" accept="video/*" hidden></label>
+ <div id="ed" style="display:none;margin-top:12px"><canvas id="cv"></canvas>
+  <div style="font-size:12px;color:var(--m)">Brightness</div><input type="range" id="br" min="40" max="180" value="100" oninput="draw()">
+  <div style="font-size:12px;color:var(--m)">Contrast</div><input type="range" id="co" min="40" max="180" value="100" oninput="draw()">
+  <div style="font-size:12px;color:var(--m)">Color</div><input type="range" id="sa" min="0" max="200" value="100" oninput="draw()">
+  <input id="tx" placeholder="Add text on photo" oninput="draw()" style="margin-top:8px">
+  <div class="row"><button class="btn" onclick="rot++;draw()">Rotate</button><button class="btn" onclick="flip=!flip;draw()">Flip</button><button class="btn" onclick="gray=!gray;draw()">B&amp;W</button><button class="btn" onclick="save()">Save</button></div></div>
+ <div id="ve" style="display:none;margin-top:12px"><video id="vp" controls></video>
+  <div class="row"><input id="vs" type="number" min="0" step="0.1" placeholder="Start sec"><input id="ve2" type="number" min="0" step="0.1" placeholder="End sec"></div>
+  <div class="row"><label><input id="vm" type="checkbox" style="width:auto"> Mute</label><button class="btn" id="vb" onclick="trim()">Trim video</button></div>
+  <video id="vo" controls style="display:none;margin-top:10px"></video><a id="vd" class="btn" style="display:none;margin-top:10px" download="arim-video.mp4">Download</a></div></section>
+
+<section class="sec" id="s-more"><div class="ttl mono">SETTINGS</div>
+ <div class="row"><button class="btn" onclick="theme('')">Cyan</button><button class="btn" onclick="theme('crimson')">Crimson</button><button class="btn" onclick="theme('emerald')">Emerald</button><button class="btn" onclick="lang()" id="lg">BN</button></div>
+ <div class="ttl mono" style="margin-top:16px">MEMORY</div><div id="mem" style="font-size:13px"></div>
+ <div class="row"><button class="btn" onclick="admin()">Admin update</button></div></section>
+</div>
+<nav id="nav"><button data-g="home" onclick="go('home')">Home</button><button data-g="chat" onclick="go('chat')">Chat</button><button data-g="media" onclick="go('media')">Studio</button><button data-g="world" onclick="go('world')">World</button><button data-g="more" onclick="go('more')">More</button></nav>
+<script>
+const $=id=>document.getElementById(id);let token=localStorage.t||"",msgs=[],L=localStorage.l||"bn-BD",rec=null;
+document.documentElement.dataset.t=localStorage.th||"";
+async function api(p,o={}){o.headers={...(o.body&&typeof o.body==="string"?{"Content-Type":"application/json"}:{}),...(token?{Authorization:"Bearer "+token}:{}),...(o.headers||{})};
+ const r=await fetch(p,o);if(r.status===401&&token&&p!=="/api/start"){localStorage.removeItem("t");token="";await init()}return r}
+const J=async(p,o)=>{const r=await api(p,o);return r.json().catch(()=>({}))};
+function go(v){document.body.dataset.v=v;window.scrollTo(0,0);if(v==="more")memory()}
+function theme(t){localStorage.th=t;document.documentElement.dataset.t=t}
+function lang(){L=L.startsWith("bn")?"en-US":"bn-BD";localStorage.l=L;$("lg").textContent=L.startsWith("bn")?"BN":"EN"}
+function tab(k){$("pv").style.display=k==="v"?"block":"none";$("pa").style.display=k==="a"?"block":"none";$("pnote").style.display=k==="n"?"block":"none";
+ ["v","a","n"].forEach(x=>$("t"+x).className=x===k?"on":"")}
+function add(role,text){const d=document.createElement("div");d.className="m "+(role==="user"?"u":"");d.textContent=text;$("log").append(d);$("log").scrollTop=1e9}
+async function send(text){text=(text||$("t").value).trim();if(!text)return;$("t").value="";go(innerWidth<900?"chat":document.body.dataset.v);add("user",text);msgs.push({role:"user",text});
+ $("st").textContent="● ARIM is thinking";const j=await J("/api/chat",{method:"POST",body:JSON.stringify({messages:msgs})});
+ const r=j.reply||j.error||"Error";add("model",r);msgs.push({role:"model",text:r});$("st").textContent="● ARIM is ready";if(j.reply){speak(r);memory(true)}}
+function speak(t){if(!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=L;
+ u.onstart=()=>$("st").textContent="● ARIM is speaking";u.onend=()=>$("st").textContent="● ARIM is ready";speechSynthesis.speak(u)}
+function mic(){const S=window.SpeechRecognition||window.webkitSpeechRecognition;if(!S){alert("Use Chrome for voice");return}
+ stopAll();rec=new S();rec.lang=L;$("st").textContent="● ARIM is listening";rec.onresult=e=>send(e.results[0][0].transcript);
+ rec.onend=()=>{if($("st").textContent.includes("listening"))$("st").textContent="● ARIM is ready"};rec.start()}
+function stopAll(){try{rec&&rec.abort()}catch(e){}if(window.speechSynthesis)speechSynthesis.cancel();$("st").textContent="● ARIM is ready"}
+async function memory(quiet){const j=await J("/api/memory");const n=(j.items||[]).length;$("mc").textContent=n+" saved";if(quiet)return;
+ $("mem").innerHTML=(j.items||[]).map(i=>`<div style="padding:6px 0">${i.text.replace(/</g,"&lt;")} <button class="btn" style="padding:2px 8px" onclick="del(${i.id})">delete</button></div>`).join("")||"No memory yet. Say: remember ... / মনে রাখো ..."}
+async function del(id){await api("/api/memory/"+id,{method:"DELETE"});memory()}
+async function news(){const j=await J("/api/news");$("news").innerHTML=(j.items||[]).map((t,i)=>`<div class="pr"><b>0${i+1}</b>&nbsp; ${t.replace(/</g,"&lt;")}</div>`).join("")||"<div style='font-size:13px;color:var(--m)'>News unavailable right now.</div>"}
+function hub(q){q=(q||"").trim();if(!q)return;$("hubout").innerHTML="Drawing...";const im=new Image();im.onload=()=>{$("hubout").innerHTML="";$("hubout").append(im)};
+ im.onerror=()=>$("hubout").textContent="Could not draw this now. Try again.";im.src="https://gen.pollinations.ai/image/"+encodeURIComponent(q+", futuristic blueprint, dark background, cyan lines")}
+let img=null,rot=0,flip=false,gray=false;
+$("pf").onchange=e=>{const f=e.target.files[0];if(!f)return;img=new Image();img.onload=()=>{rot=0;flip=false;gray=false;$("ed").style.display="block";draw()};img.src=URL.createObjectURL(f)};
+function draw(){if(!img)return;const c=$("cv"),w=img.width,h=img.height,r=rot%2;c.width=r?h:w;c.height=r?w:h;const x=c.getContext("2d");x.save();x.translate(c.width/2,c.height/2);x.rotate(rot*Math.PI/2);if(flip)x.scale(-1,1);
+ x.filter=`brightness(${$("br").value}%) contrast(${$("co").value}%) saturate(${$("sa").value}%) grayscale(${gray?1:0})`;x.drawImage(img,-w/2,-h/2);x.restore();
+ const t=$("tx").value;if(t){x.filter="none";x.font=`bold ${c.width/12}px sans-serif`;x.textAlign="center";x.lineWidth=c.width/150;x.strokeStyle="#000";x.fillStyle="#fff";x.strokeText(t,c.width/2,c.height*.93);x.fillText(t,c.width/2,c.height*.93)}}
+function save(){$("cv").toBlob(b=>{const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="arim-photo.png";a.click()})}
+let vfile=null;$("vf").onchange=e=>{vfile=e.target.files[0];if(!vfile)return;$("vp").src=URL.createObjectURL(vfile);$("ve").style.display="block";$("vo").style.display=$("vd").style.display="none"};
+async function trim(){if(!vfile)return;const fd=new FormData();fd.append("file",vfile);fd.append("start",$("vs").value||0);fd.append("end",$("ve2").value||0);fd.append("mute",$("vm").checked?"1":"0");
+ $("vb").textContent="Working...";const r=await api("/api/video/trim",{method:"POST",body:fd});$("vb").textContent="Trim video";
+ if(!r.ok){const j=await r.json().catch(()=>({}));alert(j.error||"Failed");return}const u=URL.createObjectURL(await r.blob());$("vo").src=u;$("vd").href=u;$("vo").style.display=$("vd").style.display="block"}
+async function checkVer(){const j=await J("/api/version");if(!j.version)return;$("ver").textContent="v"+j.version;const old=localStorage.v;
+ if(!old)localStorage.v=j.version;else if(old!==j.version){const b=$("banner");b.style.display="block";b.textContent="New update: "+(j.notes||j.version)+" — tap to refresh";b.onclick=()=>{localStorage.v=j.version;location.reload()}}}
+async function admin(){const k=prompt("Admin key");if(!k)return;const v=prompt("New version number");if(!v)return;const n=prompt("What is new? (shown to users)")||"";
+ const j=await J("/api/admin/set",{method:"POST",headers:{"X-Admin-Key":k},body:JSON.stringify({version:v,notes:n})});alert(j.ok?"Update published":"Wrong admin key")}
+async function init(){if(!token){const j=await J("/api/start",{method:"POST"});token=j.token||"";localStorage.t=token}
+ $("lg").textContent=L.startsWith("bn")?"BN":"EN";$("nt").value=localStorage.nt||"";checkVer();memory(true);news()}
+setInterval(()=>token&&checkVer(),60000);init();
+</script></body></html>
