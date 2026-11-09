@@ -45,7 +45,7 @@ img,video,canvas{max-width:100%;border-radius:8px}label.btn{display:inline-block
 
 <section class="sec" id="s-chat"><div class="tabs mono"><button class="on" id="tv" onclick="tab('v')">VOICE</button><button id="ta" onclick="tab('a')">AGENT</button><button id="tn" onclick="tab('n')">NOTES</button></div>
  <div id="pv"><div id="log"></div><div class="row"><button class="btn" aria-label="Attach photo or video" onclick="go('media')">📎</button><input id="t" placeholder="Type to ARIM..." onkeydown="if(event.key==='Enter')send()"><button class="btn" aria-label="Send" onclick="send()">↑</button></div></div>
- <div id="pa" style="display:none;font-size:13px;color:var(--m)">Agents are planned for the next phase.</div>
+ <div id="pa" style="display:none;font-size:13px;color:var(--m)"><label for="arinAgentSelect">SELECT ACTIVE AGENT</label><select id="arinAgentSelect" onchange="setTownAgent(this.value)" style="width:100%;margin:10px 0;background:#071727;border:1px solid #1c7185;border-radius:8px;color:#8defff;padding:12px"><option value="ARIN">ARIN — Main intelligence</option><option value="RONI">RONI — Coding agent</option><option value="DIVA">DIVA — Creative agent</option><option value="ZARA">ZARA — Personal assistant</option><option value="MAYA">MAYA — Companion agent</option><option value="NEXUS">NEXUS — Analysis agent</option></select><p id="agentHint">The selected agent will answer in the shared team conversation.</p></div>
  <div id="pnote" style="display:none"><textarea id="nt" rows="12" placeholder="Your notes (saved on this device)" oninput="localStorage.nt=this.value"></textarea></div></section>
 
 <section class="sec" id="s-media"><div class="ttl mono">PHOTO &amp; VIDEO STUDIO</div>
@@ -69,7 +69,7 @@ img,video,canvas{max-width:100%;border-radius:8px}label.btn{display:inline-block
 <nav id="nav"><button data-g="home" onclick="go('home')">Town</button><button data-g="chat" onclick="go('chat')">Chat</button><button data-g="media" onclick="go('media')">Studio</button><button data-g="world" onclick="go('world')">World</button><button data-g="more" onclick="go('more')">More</button></nav>
 <script>
 const $=id=>document.getElementById(id);
-function selectTownAgent(name){const s=$("arinAgentSelect");if(s){s.value=name;s.dispatchEvent(new Event("change"));}go("chat");}let token=localStorage.t||"",msgs=[],L=localStorage.l||"bn-BD",rec=null;
+let activeAgent="ARIN";function setTownAgent(name){activeAgent=name;const s=$("arinAgentSelect");if(s&&s.value!==name)s.value=name;const hint=$("agentHint");if(hint)hint.textContent=name+" is selected. Your next message will be answered by "+name+".";const status=$("st");if(status)status.textContent=name+" SELECTED";}function selectTownAgent(name){setTownAgent(name);go("chat");tab("v");}let token=localStorage.t||"",msgs=[],L=localStorage.l||"bn-BD",rec=null;
 document.documentElement.dataset.t=localStorage.th||"";
 async function api(p,o={}){o.headers={...(o.body&&typeof o.body==="string"?{"Content-Type":"application/json"}:{}),...(token?{Authorization:"Bearer "+token}:{}),...(o.headers||{})};
  const r=await fetch(p,o);if(r.status===401&&token&&p!=="/api/start"){localStorage.removeItem("t");token="";await init()}return r}
@@ -81,7 +81,7 @@ function tab(k){$("pv").style.display=k==="v"?"block":"none";$("pa").style.displ
  ["v","a","n"].forEach(x=>$("t"+x).className=x===k?"on":"")}
 function add(role,text){const d=document.createElement("div");d.className="m "+(role==="user"?"u":"");d.textContent=text;$("log").append(d);$("log").scrollTop=1e9}
 async function send(text){text=(text||$("t").value).trim();if(!text)return;$("t").value="";go(innerWidth<900?"chat":document.body.dataset.v);add("user",text);msgs.push({role:"user",text});
- $("st").textContent="● ARIM is thinking";const j=await J("/api/chat",{method:"POST",body:JSON.stringify({messages:msgs})});
+ $("st").textContent="● ARIM is thinking";const j=await J("/api/chat",{method:"POST",body:JSON.stringify({messages:msgs,agent:activeAgent})});
  const r=j.reply||j.error||"Error";add("model",r);msgs.push({role:"model",text:r});$("st").textContent="● ARIM is ready";if(j.reply){speak(r);memory(true)}}
 function speak(t){if(!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=L;
  u.onstart=()=>$("st").textContent="● ARIM is speaking";u.onend=()=>$("st").textContent="● ARIM is ready";speechSynthesis.speak(u)}
