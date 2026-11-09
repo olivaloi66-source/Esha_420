@@ -362,7 +362,7 @@ body[data-v="home"] #nav button{min-width:0;min-height:48px;touch-action:manipul
 
 <section class="sec" id="s-more"><div class="ttl mono">SETTINGS</div>
  <div class="row"><button class="btn" onclick="theme('')">Cyan</button><button class="btn" onclick="theme('crimson')">Crimson</button><button class="btn" onclick="theme('emerald')">Emerald</button><button class="btn" onclick="lang()" id="lg">BN</button></div>
- <div class="ttl mono" style="margin-top:16px">MEMORY <span id="mc"></span></div><div id="mem" style="font-size:13px"></div>
+ <div class="ttl mono" style="margin-top:16px">MEMORY <span id="mc"></span></div><div class="row"><input id="memory-input" maxlength="2000" placeholder="Save a memory... / মনে রাখো ..."><button class="btn" type="button" onclick="saveMemory()">Save</button></div><div id="mem" style="font-size:13px"></div>
  <div class="row"><button class="btn" onclick="admin()">Admin update</button></div></section>
 </div>
 <nav id="nav"><button data-g="home" onclick="go('home')">Home</button><button data-g="chat" onclick="go('chat')">Tools</button><button data-g="media" onclick="go('media')">History</button><button data-g="world" onclick="go('world')">Favorites</button><button data-g="more" onclick="go('more')">Profile</button></nav>
@@ -420,7 +420,7 @@ function mic(){const S=window.SpeechRecognition||window.webkitSpeechRecognition;
  stopAll();rec=new S();rec.lang=L;$("st").textContent="● ARIM is listening";rec.onresult=e=>send(e.results[0][0].transcript);
  rec.onend=()=>{if($("st").textContent.includes("listening"))$("st").textContent="● ARIM is ready"};rec.start()}
 function stopAll(){try{rec&&rec.abort()}catch(e){}if(window.speechSynthesis)speechSynthesis.cancel();$("st").textContent="● ARIM is ready"}
-async function memory(quiet){const j=await J("/api/memory");const n=(j.items||[]).length;$("mc").textContent=n+" saved";if(quiet)return;
+async function saveMemory(){const el=$("memory-input");const value=el?el.value.trim():"";if(!value)return;try{const j=await J("/api/memory",{method:"POST",body:JSON.stringify({text:value})});if(j.id){el.value="";await memory();}else alert(j.error||"Could not save memory.");}catch(e){alert("Memory could not be saved. Check your connection.");}}\nasync function memory(quiet){const j=await J("/api/memory");const n=(j.items||[]).length;$("mc").textContent=n+" saved";if(quiet)return;
  $("mem").innerHTML=(j.items||[]).map(i=>`<div style="padding:6px 0">${escapeHTML(i.text)} <button class="btn" style="padding:2px 8px" onclick="del(${i.id})">delete</button></div>`).join("")||"No memory yet. Say: remember ... / মনে রাখো ..."}
 async function del(id){await api("/api/memory/"+id,{method:"DELETE"});memory()}
 async function news(){const j=await J("/api/news");$("news").innerHTML=(j.items||[]).map((t,i)=>`<div class="pr"><b>0${i+1}</b>&nbsp; ${escapeHTML(t)}</div>`).join("")||"<div style='font-size:13px;color:var(--m)'>News unavailable right now.</div>"}
