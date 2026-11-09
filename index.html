@@ -173,6 +173,37 @@ body[data-v="home"] #nav [data-g="home"]{color:#ff4054!important;text-shadow:0 0
 @media(min-width:600px){.town-floor{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(prefers-reduced-motion:reduce){.agent-avatar,.talk-dots b{animation:none!important}}
 
+
+/* Agent Town feature banner + home quick chat */
+.ar-town-preview{position:relative;z-index:2;display:block;width:100%;margin:2px 0 14px;padding:0;overflow:hidden;text-align:left;color:#fff;border:1.5px solid #ff3048;border-radius:18px;background:#09050c;box-shadow:0 0 18px #ff203522,inset 0 0 24px #ff20351a}
+.ar-town-preview:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.ar-town-head{position:absolute;z-index:4;left:13px;right:13px;top:10px;display:flex;align-items:center;justify-content:space-between;text-shadow:0 1px 8px #000}
+.ar-town-head strong{font-size:15px;color:#fff}.ar-town-head small{display:block;font-size:10px;color:#ffc1ca}.ar-town-arrow{font-size:28px;color:#ff4054;text-shadow:0 0 12px #ff3048}
+.ar-town-city{height:clamp(190px,42vw,270px);position:relative;overflow:hidden;background:radial-gradient(ellipse at 50% 80%,#6d143b 0,transparent 45%),linear-gradient(180deg,#13071c 0%,#250b2c 42%,#080810 100%)}
+.ar-town-city:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 28px,#ff40541a 29px 30px),linear-gradient(180deg,transparent 55%,#ff294b33);opacity:.7}
+.ar-city-skyline{position:absolute;left:0;right:0;bottom:35%;height:55%;display:flex;align-items:end;justify-content:space-around;gap:4px}
+.ar-city-skyline i{display:block;position:relative;width:8%;height:var(--h);border:1px solid #9e2d78;background:linear-gradient(90deg,#180f36,#321052 55%,#100b25);box-shadow:0 0 13px #e51c8c55}
+.ar-city-skyline i:before{content:"";position:absolute;inset:9px 4px;background:repeating-linear-gradient(0deg,#ff3e9b 0 2px,transparent 2px 10px);opacity:.8}
+.ar-city-skyline i:after{content:"";position:absolute;left:50%;top:-13px;height:13px;border-left:1px solid #ff638e;box-shadow:0 0 8px #ff3048}
+.ar-town-floor{position:absolute;left:-8%;right:-8%;bottom:-28%;height:54%;transform:perspective(180px) rotateX(52deg);transform-origin:top;background-image:linear-gradient(#ff345a55 1px,transparent 1px),linear-gradient(90deg,#ff345a55 1px,transparent 1px);background-size:28px 24px;box-shadow:0 -8px 35px #ed175455}
+.ar-town-reactor{position:absolute;left:50%;bottom:14%;transform:translateX(-50%);width:74px;height:74px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 25%,#ffb6c1,#f32655 18%,#29071d 68%);border:2px solid #ff9cac;color:#fff;font-weight:900;font-size:14px;box-shadow:0 0 14px #ff315f,0 0 38px #fa155e;animation:town-reactor-pulse 2s ease-in-out infinite}
+@keyframes town-reactor-pulse{50%{transform:translateX(-50%) scale(1.09);box-shadow:0 0 24px #ff315f,0 0 58px #fa155e}}
+.ar-mini-team{position:absolute;left:3%;right:3%;bottom:7%;display:grid;grid-template-columns:repeat(5,1fr);gap:5px;align-items:end}
+.ar-mini-agent{position:relative;min-width:0;height:74px;border:1px solid #a72b59;border-radius:10px 10px 4px 4px;background:linear-gradient(160deg,#28102b,#090b17);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:3px 2px 5px;box-shadow:0 0 12px #ff1e5c30}
+.ar-mini-agent:nth-child(even){height:62px}
+.ar-mini-person{font-size:24px;line-height:1.1;animation:mini-work 1.8s ease-in-out infinite}
+.ar-mini-agent:nth-child(2) .ar-mini-person{animation-delay:-.4s}.ar-mini-agent:nth-child(3) .ar-mini-person{animation-delay:-.8s}.ar-mini-agent:nth-child(4) .ar-mini-person{animation-delay:-1.2s}.ar-mini-agent:nth-child(5) .ar-mini-person{animation-delay:-1.5s}
+@keyframes mini-work{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-4px) rotate(3deg)}}
+.ar-mini-desk{width:90%;height:9px;margin-top:2px;border-top:2px solid #ff4c78;background:#241326;position:relative}
+.ar-mini-desk:after{content:"";position:absolute;left:38%;top:-13px;width:22px;height:11px;border:1px solid #45dfff;background:#06253a;box-shadow:0 0 9px #19cfff}
+.ar-mini-agent small{font:700 7px ui-monospace,monospace;color:#ffc4d1;letter-spacing:.08em}
+.ar-home-chat{position:relative;z-index:3;display:flex;gap:9px;align-items:center;margin:6px 0 12px}
+.ar-home-chat input{min-width:0;flex:1;height:54px;border:1.5px solid #ff3048;border-radius:28px;background:#08070c;color:#fff;padding:0 18px;font-size:14px;box-shadow:0 0 14px #ff203522}
+.ar-home-chat button{flex:none;width:52px;height:52px;border:1px solid #ff6577;border-radius:50%;background:#ff203d;color:white;font-size:22px;box-shadow:0 0 18px #ff203d66}
+.ar-home-chat button.voice{background:#170810;color:#ff536a}
+@media(max-width:390px){.ar-town-city{height:190px}.ar-town-head strong{font-size:13px}.ar-mini-agent{height:65px}.ar-mini-agent:nth-child(even){height:56px}.ar-mini-person{font-size:20px}.ar-home-chat input{font-size:12px;padding:0 13px}.ar-home-chat button{width:46px;height:46px}}
+@media(prefers-reduced-motion:reduce){.ar-town-reactor,.ar-mini-person{animation:none!important}}
+
 </style></head><body data-v="home">
 <div id="banner"></div>
 <div id="top"><b class="mono">ARIM AI</b><span id="ver"></span></div>
@@ -199,6 +230,20 @@ body[data-v="home"] #nav [data-g="home"]{color:#ff4054!important;text-shadow:0 0
 <a class="ar-social" href="https://m.facebook.com/" target="_blank" rel="noopener"><span>f</span>Facebook</a>
 <a class="ar-social" href="https://www.messenger.com/" target="_blank" rel="noopener"><span>ϟ</span>Messenger</a>
 </div>
+<button class="ar-town-preview" type="button" onclick="openTown()" aria-label="Open Agent Town">
+ <div class="ar-town-head"><span><strong>🏘 Agent Town</strong><small>Your AI Agents City · 6 agents working</small></span><b class="ar-town-arrow">»</b></div>
+ <div class="ar-town-city">
+  <div class="ar-city-skyline"><i style="--h:42%"></i><i style="--h:72%"></i><i style="--h:55%"></i><i style="--h:90%"></i><i style="--h:62%"></i><i style="--h:78%"></i><i style="--h:48%"></i><i style="--h:66%"></i><i style="--h:38%"></i></div>
+  <div class="ar-town-floor"></div><div class="ar-town-reactor">ARIN</div>
+  <div class="ar-mini-team">
+   <div class="ar-mini-agent"><span class="ar-mini-person">👨‍💻</span><span class="ar-mini-desk"></span><small>RONI</small></div>
+   <div class="ar-mini-agent"><span class="ar-mini-person">👩‍🎨</span><span class="ar-mini-desk"></span><small>DIVA</small></div>
+   <div class="ar-mini-agent"><span class="ar-mini-person">🤖</span><span class="ar-mini-desk"></span><small>ARIN</small></div>
+   <div class="ar-mini-agent"><span class="ar-mini-person">👩‍💼</span><span class="ar-mini-desk"></span><small>ZARA</small></div>
+   <div class="ar-mini-agent"><span class="ar-mini-person">🧑‍🔬</span><span class="ar-mini-desk"></span><small>NEXUS</small></div>
+  </div>
+ </div>
+</button>
 <div class="ar-tools">
 <button class="ar-tool" onclick="go('media')"><span class="ar-ico">▶</span>Media</button>
 <button class="ar-tool" onclick="openTown()"><span class="ar-ico">⌂</span>Agent Town</button>
@@ -208,7 +253,11 @@ body[data-v="home"] #nav [data-g="home"]{color:#ff4054!important;text-shadow:0 0
 <button class="ar-tool wide" onclick="go('chat');tab('v')"><span class="ar-ico">♩</span>Voices</button>
 <button class="ar-tool wide" onclick="go('more')"><span class="ar-ico">⚙</span>Settings</button>
 </div>
-
+<div class="ar-home-chat">
+ <input id="home-ask" type="text" placeholder="Ask ARIN anything..." aria-label="Ask ARIN anything" onkeydown="if(event.key==='Enter'){event.preventDefault();sendHomeAsk()}">
+ <button type="button" aria-label="Send message" onclick="sendHomeAsk()">➤</button>
+ <button type="button" class="voice" aria-label="Voice input" onclick="mic()">🎙</button>
+</div>
 <div class="ar-palette-wrap">
   <div class="ar-social-title">CHOOSE YOUR COLOR</div>
   <div class="ar-palette" aria-label="Choose interface color">
@@ -280,6 +329,7 @@ function chooseColor(hex){
  localStorage.setItem('arinAccent',hex);
  document.querySelectorAll('.ar-swatch').forEach(b=>b.style.outline=b.getAttribute('aria-label')===({ '#ff3048':'Red','#ff7a18':'Orange','#ffd43b':'Gold','#28d17c':'Green','#22d3ee':'Cyan','#3987ff':'Blue','#8b5cf6':'Purple','#ec4899':'Pink','#f1f5f9':'Silver' })[hex]?'2px solid white':'none');
 }
+function sendHomeAsk(){const el=$("home-ask");const value=el?el.value.trim():"";if(!value)return;el.value="";send(value)}
 function openTown(){ $('arin-town-view').hidden=false;document.querySelector('.ar-social-title').scrollIntoView({block:'start',behavior:'smooth'});$('arin-town-view').scrollIntoView({block:'start',behavior:'smooth'}); }
 function closeTown(){ $('arin-town-view').hidden=true;window.scrollTo({top:0,behavior:'smooth'}); }
 function agentTalking(name,on){document.querySelectorAll('.town-agent').forEach(el=>el.classList.toggle('talking',on&&el.dataset.agent===name));}
