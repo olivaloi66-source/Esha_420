@@ -98,6 +98,48 @@ body[data-v=home] #nav [data-g=home]{color:#ff4054;text-shadow:0 0 12px #ff253b}
 @media(max-width:380px){#arin-red-home{padding-left:10px;padding-right:10px}.ar-status,.ar-agentpick{padding:7px;font-size:11px}.ar-orb{width:140px;height:140px}.ar-tool{min-height:78px;font-size:11px}.ar-social{font-size:10px;min-height:70px}}
 @media(prefers-reduced-motion:reduce){.ar-orb,.ar-orb-stage:before,.ar-orb-stage:after{animation:none!important}}
 
+/* Full-bleed ARIN reference screen: isolate home from every legacy shell */
+html:has(body[data-v="home"]),body[data-v="home"]{background:#030306!important;color:#f5f3f7!important}
+body[data-v="home"]{padding:0!important;min-height:100svh;overflow-x:hidden}
+body[data-v="home"] #banner,body[data-v="home"] #top{display:none!important}
+body[data-v="home"] #grid{display:block!important;width:100%;max-width:none!important;margin:0!important;padding:0!important;gap:0!important}
+body[data-v="home"] #s-home{display:block!important;width:100%;min-height:calc(100svh - 76px);padding:0!important;margin:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;overflow:hidden}
+body[data-v="home"] #s-world,body[data-v="home"] #s-hub,body[data-v="home"] #s-chat,body[data-v="home"] #s-media,body[data-v="home"] #s-more{display:none!important}
+body[data-v="home"] #arin-red-home{width:100%;max-width:none;min-height:calc(100svh - 76px);margin:0;padding:env(safe-area-inset-top) 18px 20px;background:radial-gradient(ellipse at 50% 28%,#27040b 0,#100308 30%,#030306 70%)!important;border:0!important;border-radius:0!important;box-shadow:none!important}
+body[data-v="home"] #arin-red-home:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.6;background:radial-gradient(circle at 4% 12%,#ff253522 0 1px,transparent 2px),radial-gradient(circle at 87% 23%,#ff253544 0 1px,transparent 2px),radial-gradient(circle at 22% 46%,#ff253533 0 1px,transparent 2px),radial-gradient(circle at 75% 61%,#ff253533 0 1px,transparent 2px)}
+body[data-v="home"] .ar-head{min-height:66px;padding:5px 2px;gap:8px}
+body[data-v="home"] .ar-menu{font-size:32px;color:#ff3048}
+body[data-v="home"] .ar-brand{gap:5px}
+body[data-v="home"] .ar-mark{font-size:43px}
+body[data-v="home"] .ar-brand strong{font-size:20px;letter-spacing:.12em}
+body[data-v="home"] .ar-brand small{font-size:10px}
+body[data-v="home"] .ar-pro{white-space:nowrap;padding:8px 10px}
+body[data-v="home"] .ar-hero{height:clamp(245px,37vh,370px);margin:0 -4px}
+body[data-v="home"] .ar-orb-stage{width:min(78vw,390px);height:clamp(220px,32vh,330px)}
+body[data-v="home"] .ar-orb{width:clamp(145px,25vw,220px);height:clamp(145px,25vw,220px)}
+body[data-v="home"] .ar-core{font-size:clamp(25px,4vw,36px)}
+body[data-v="home"] .ar-core i{font-size:clamp(48px,7vw,70px)}
+body[data-v="home"] .ar-status{left:0;top:39%;z-index:2}
+body[data-v="home"] .ar-agentpick{right:0;top:39%;z-index:2}
+body[data-v="home"] .ar-social-title{font-size:11px;margin:4px 2px 10px}
+body[data-v="home"] .ar-socials{grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin-bottom:14px}
+body[data-v="home"] .ar-social{min-height:clamp(74px,11vw,104px);border-radius:16px;border-color:#3e2029;background:linear-gradient(155deg,#190910,#08070c 75%);font-size:clamp(9px,2.5vw,13px)}
+body[data-v="home"] .ar-social span{font-size:clamp(22px,5vw,32px)}
+body[data-v="home"] .ar-tools{gap:9px;margin-bottom:16px}
+body[data-v="home"] .ar-tool{min-height:clamp(82px,12vw,112px);border-radius:20px;border-color:#63202d;background:linear-gradient(145deg,#200910,#09070c 72%);font-size:clamp(11px,2.7vw,15px);box-shadow:inset 0 1px 14px #ff26381a,0 0 16px #ff26380c}
+body[data-v="home"] .ar-tool .ar-ico{font-size:clamp(26px,5vw,38px)}
+body[data-v="home"] #nav{height:76px;padding:5px 4px calc(5px + env(safe-area-inset-bottom));background:linear-gradient(180deg,#0c080d,#050407)!important;border-top:1px solid #6b1729!important;box-shadow:0 -8px 28px #ff17301c!important;z-index:20}
+body[data-v="home"] #nav button{flex:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#a9a6b4!important;font-size:11px;padding:3px 1px}
+body[data-v="home"] #nav button:before{font-size:22px;line-height:1.1}
+body[data-v="home"] #nav [data-g="home"]:before{content:"⌂"}
+body[data-v="home"] #nav [data-g="chat"]:before{content:"▦"}
+body[data-v="home"] #nav [data-g="media"]:before{content:"◷"}
+body[data-v="home"] #nav [data-g="world"]:before{content:"☆"}
+body[data-v="home"] #nav [data-g="more"]:before{content:"♙"}
+body[data-v="home"] #nav [data-g="home"]{color:#ff4054!important;text-shadow:0 0 12px #ff253b}
+@media(min-width:700px){body[data-v="home"] #arin-red-home{padding-left:max(28px,calc((100vw - 900px)/2));padding-right:max(28px,calc((100vw - 900px)/2))}body[data-v="home"] .ar-hero{height:350px}body[data-v="home"] .ar-socials,body[data-v="home"] .ar-tools{gap:14px}}
+@media(max-width:390px){body[data-v="home"] #arin-red-home{padding-left:12px;padding-right:12px}body[data-v="home"] .ar-status,body[data-v="home"] .ar-agentpick{padding:7px 8px}body[data-v="home"] .ar-status small{font-size:10px}body[data-v="home"] .ar-agentpick strong{font-size:11px}body[data-v="home"] .ar-social{min-height:68px}body[data-v="home"] .ar-tool{min-height:76px}}
+@media(prefers-reduced-motion:reduce){body[data-v="home"] .ar-orb,body[data-v="home"] .ar-orb-stage:before,body[data-v="home"] .ar-orb-stage:after{animation:none!important}}
 </style></head><body data-v="home">
 <div id="banner"></div>
 <div id="top"><b class="mono">ARIM AI</b><span id="ver"></span></div>
@@ -162,7 +204,7 @@ body[data-v=home] #nav [data-g=home]{color:#ff4054;text-shadow:0 0 12px #ff253b}
  <div class="ttl mono" style="margin-top:16px">MEMORY</div><div id="mem" style="font-size:13px"></div>
  <div class="row"><button class="btn" onclick="admin()">Admin update</button></div></section>
 </div>
-<nav id="nav"><button data-g="home" onclick="go('home')">Town</button><button data-g="chat" onclick="go('chat')">Chat</button><button data-g="media" onclick="go('media')">Studio</button><button data-g="world" onclick="go('world')">World</button><button data-g="more" onclick="go('more')">More</button></nav>
+<nav id="nav"><button data-g="home" onclick="go('home')">Home</button><button data-g="chat" onclick="go('chat')">Tools</button><button data-g="media" onclick="go('media')">History</button><button data-g="world" onclick="go('world')">Favorites</button><button data-g="more" onclick="go('more')">Profile</button></nav>
 <script>
 const $=id=>document.getElementById(id);
 let activeAgent="ARIN";function setTownAgent(name){activeAgent=name;const s=$("arinAgentSelect");if(s&&s.value!==name)s.value=name;const hint=$("agentHint");if(hint)hint.textContent=name+" is selected. Your next message will be answered by "+name+".";const status=$("st");if(status)status.textContent=name+" SELECTED";}function selectTownAgent(name){setTownAgent(name);go("chat");tab("v");}let token=localStorage.t||"",msgs=[],L=localStorage.l||"bn-BD",rec=null;
