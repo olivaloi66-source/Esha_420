@@ -1,51 +1,55 @@
 # ARIN AI
 
-ARIN AI is a Flask-backed assistant web app with a responsive red holographic home screen, six selectable agent personas, a shared chat, saved memories, RSS headlines, a photo editor, and optional FFmpeg video trimming.
+ARIN AI is a mobile-first assistant web app with a red holographic home screen, six specialist agents, a shared team conversation, per-agent private memories, shared user memories, headlines, a photo editor, and video trimming.
 
-## Run locally
+## Local setup
 
-Python 3.10+ is recommended.
+Python 3.10+:
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-export OPENAI_API_KEY="your-api-key"
-export ARIN_ADMIN_KEY="choose-a-long-random-secret"
-python app.py
+python server.py
 ```
 
-Open http://localhost:5000. On Windows, activate the virtual environment with `.venv\\Scripts\\activate` and set environment variables using PowerShell's `$env:NAME="value"` syntax.
+Open http://localhost:8000.
 
-## Deploy on Render
-
-1. Push this repository to GitHub and create a new Render Web Service from it (or use the included `render.yaml` blueprint).
-2. Set the secret `OPENAI_API_KEY` in the Render environment. The blueprint prompts for it; it is never stored in source control.
-3. Deploy. Render uses `gunicorn` and the included `apt.txt` requests FFmpeg for video trimming.
-4. Open the deployed URL and test chat, memory, and media tools.
-
-Environment variables:
+The existing server uses an OpenAI-compatible chat-completions endpoint. Its default is the Pollinations endpoint, so configure the provider details as environment variables if needed:
 
 | Variable | Purpose | Default |
 |---|---|---|
-| `OPENAI_API_KEY` | Required to enable AI chat | unset |
-| `OPENAI_MODEL` | Chat model name | `gpt-4o-mini` |
-| `OPENAI_BASE_URL` | OpenAI-compatible API base URL | `https://api.openai.com/v1` |
-| `ARIN_ADMIN_KEY` | Protects the admin version endpoint | unset (admin disabled) |
-| `ARIN_VERSION` | Version shown in the app | `1.0.0` |
-| `ARIN_RELEASE_NOTES` | Update banner text | empty |
-| `ARIN_DB_PATH` | SQLite database file | `./arin.sqlite3` |
+| `AI_URL` | OpenAI-compatible chat completions URL | `https://gen.pollinations.ai/v1/chat/completions` |
+| `AI_MODEL` | Model name sent to the provider | `openai` |
+| `AI_KEY` | Optional provider API key | empty |
+| `ADMIN_KEY` | Secret required for admin settings changes | empty (admin disabled) |
+| `ARIN_DB_PATH` | SQLite database location | `./arim.db` |
 
-## Features and limitations
+Never commit API keys or admin secrets. Put them in the hosting provider's secret environment settings or a server-only `.env` file.
 
-- **Agents:** ARIN, RONI, DIVA, ZARA, MAYA, and NEXUS use different system instructions; they share the same conversation in the browser.
-- **Memory:** saved memories are scoped to the browser session token and can be deleted from Settings. Clearing browser storage or losing the SQLite database loses access to that session's memories.
-- **News:** headline titles are fetched from BBC World and Technology RSS feeds.
-- **Photo studio:** brightness, contrast, saturation, grayscale, rotation, flip, text overlay, and PNG export run in the browser.
-- **Video studio:** trimming is server-side and requires FFmpeg. Uploads are limited to 100 MB and clips to 15 minutes.
-- **Visual Hub:** uses the external Pollinations image endpoint; its availability and policies are controlled by that provider.
-- **Admin update:** changes the running process's displayed version only; it does not deploy code or persist across a restart.
+## Deploy to Render
 
-## Production notes
+1. Import this GitHub repository as a Render Web Service, or use the included `render.yaml` blueprint.
+2. Set `AI_KEY` if your chosen AI provider requires a key. The default endpoint may also change its access requirements over time.
+3. Deploy. The Procfile and Render blueprint run `server:app`; `apt.txt` requests FFmpeg for the video tool.
+4. Visit the deployed URL and test the assistant, memory, news, and media features.
 
-Use HTTPS, keep API/admin keys in the host's secret environment settings, and never commit secrets. The default SQLite path is local to the service; on hosts with ephemeral filesystems, configure `ARIN_DB_PATH` on a persistent mounted disk if saved memories must survive restarts. Configure backups and access controls before using this with real personal data.
+The default SQLite database is stored in the service filesystem. If the host uses an ephemeral filesystem, attach a persistent disk and point `ARIN_DB_PATH` to a file on that disk to preserve accounts, chats, and memories across redeploys.
+
+## Included features
+
+- **Six agents:** ARIN (coordination), RONI (coding), DIVA (creative), ZARA (assistant), MAYA (companion), and NEXUS (analysis).
+- **Shared team conversation:** selected agents can use the shared conversation as context.
+- **Agent tools:** team task execution, agent-to-agent transfer, team-size preferences, and per-agent private memory APIs.
+- **User memory:** add and delete shared notes from Settings; the chat also recognizes “remember …” and “মনে রাখো …” requests for the selected agent's private memory.
+- **News:** BBC World RSS headlines.
+- **Photo studio:** browser-based brightness, contrast, saturation, grayscale, rotate, flip, text overlay, and PNG export.
+- **Video studio:** server-side FFmpeg trim with a 60 MB upload cap and 15-minute maximum clip.
+- **Visual Hub:** uses an external image-generation endpoint; availability is controlled by that provider.
+
+## Important operational notes
+
+- AI chat depends on the configured provider being reachable and accepting the selected model.
+- Video trimming requires FFmpeg to be installed on the host.
+- The admin endpoint changes server-side settings; it does not deploy new source code.
+- Use HTTPS and a persistent, backed-up database before storing important personal information.
