@@ -128,4 +128,5 @@ async function admin(){const k=prompt("Admin key");if(!k)return;const v=prompt("
 async function init(){if(!token){const j=await J("/api/start",{method:"POST"});token=j.token||"";localStorage.t=token}
  $("lg").textContent=L.startsWith("bn")?"BN":"EN";$("nt").value=localStorage.nt||"";checkVer();memory(true);news()}
 setInterval(()=>token&&checkVer(),60000);init();
-</script></body></html>
+</script><script src="/agent-town.js"></script>
+</body></html>
