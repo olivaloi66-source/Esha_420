@@ -86,7 +86,8 @@ class AgentTownTests(unittest.TestCase):
         last_context = model.call_args_list[5].args[1]
         self.assertTrue(any("[RONI] RONI result" in m["content"] for m in last_context))
         self.assertTrue(any("[MAYA] MAYA result" in m["content"] for m in last_context))
-        logged = server.db().execute("select speaker,text from agent_shared_chat where uid=?", (1,)).fetchall()
+        uid = server.db().execute("select id from users where token=?", (self.token,)).fetchone()["id"]
+        logged = server.db().execute("select speaker,text from agent_shared_chat where uid=?", (uid,)).fetchall()
         self.assertEqual(sum(1 for row in logged if row["speaker"] in six), 6)
 
 
