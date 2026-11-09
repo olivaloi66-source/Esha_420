@@ -59,14 +59,81 @@ img,video,canvas{max-width:100%;border-radius:8px}label.btn{display:inline-block
 .town-footer{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 12px;font-size:13px}.town-footer small{display:block;color:var(--m)}
 .pulse-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#22e07a;box-shadow:0 0 8px #22e07a}
 @media(prefers-reduced-motion:reduce){#s-home *{animation:none!important}}
+
+/* ARIN red neon home refresh */
+body[data-v=home] #top{display:none}
+body[data-v=home] #grid{display:block;padding:0;max-width:760px;margin:auto}
+body[data-v=home] #s-home{display:block!important;padding:0;border:0;background:transparent;overflow:visible}
+#arin-red-home{position:relative;min-height:calc(100vh - 66px);padding:14px 14px 28px;overflow:hidden;background:radial-gradient(ellipse at 50% 22%,#360711 0,transparent 43%),linear-gradient(180deg,#09070b,#030306 72%);color:#f6f3f7}
+#arin-red-home:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.35;background:repeating-linear-gradient(115deg,transparent 0 56px,#8b142018 57px 58px,transparent 59px 112px)}
+.ar-head{position:relative;z-index:2;display:flex;align-items:center;gap:10px;min-height:54px}
+.ar-menu{border:0;background:none;color:#ff3448;font-size:30px;padding:4px 8px}
+.ar-brand{display:flex;align-items:center;gap:8px;flex:1}.ar-mark{font-size:40px;font-weight:900;color:#ff263c;text-shadow:0 0 18px #ff1e39}
+.ar-brand strong{display:block;font-size:21px;letter-spacing:.13em;color:#ff3045}.ar-brand small{display:block;font-size:10px;color:#ddd}
+.ar-pro{border:1px solid #9b641d;background:#1b100c;color:#ffc65c;border-radius:24px;padding:8px 12px;font-weight:700}
+.ar-bell{border:0;background:none;color:#eee;font-size:23px}
+.ar-hero{position:relative;z-index:1;height:285px;display:flex;align-items:center;justify-content:center;margin:0 -3px}
+.ar-orb-stage{position:relative;width:min(76vw,330px);height:245px;display:grid;place-items:center;isolation:isolate}
+.ar-orb-stage:before,.ar-orb-stage:after{content:"";position:absolute;width:94%;height:38%;border:3px solid #ff3448;border-left-color:#ff9aa5;border-right-color:#7d1428;border-radius:50%;transform:rotate(-13deg);filter:drop-shadow(0 0 8px #ff243c);animation:ar-ring 8s linear infinite}
+.ar-orb-stage:after{width:112%;height:48%;transform:rotate(12deg);border-color:#8d1b31 #ff4054 #9e1b30 #ff9aa3;opacity:.75;animation-duration:11s;animation-direction:reverse}
+.ar-orb{position:relative;width:164px;height:164px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 25%,#ff9ba6 0,#b80e25 14%,#24040b 49%,#050408 72%);border:2px solid #ff6878;box-shadow:0 0 18px #ff253e,0 0 50px #d80c2b,inset 0 0 25px #ff1b3b;animation:ar-pulse 3.2s ease-in-out infinite}
+.ar-orb:before{content:"";position:absolute;inset:-13px;border-radius:50%;border:1px solid #ff5267;box-shadow:0 0 20px #ff2638,inset 0 0 20px #ff2638;opacity:.7}
+.ar-core{text-align:center;font-weight:900;font-size:29px;letter-spacing:.06em;text-shadow:0 0 12px #ff3048}.ar-core i{display:block;font-style:normal;color:#ff293f;font-size:55px;line-height:.9}
+.ar-status{position:absolute;top:38%;left:0;border:1px solid #a21d32;border-radius:17px;padding:10px 12px;background:#09070cdd;box-shadow:0 0 18px #f21b3525}
+.ar-status b{display:block;color:#19e78a;font-size:15px}.ar-status small{color:#c5c5d0}
+.ar-agentpick{position:absolute;right:0;top:39%;border:1px solid #a21d32;border-radius:17px;padding:10px 12px;background:#09070cdd;color:#f3f3fa;text-align:left}
+.ar-agentpick small{display:block;color:#aeb2c2}.ar-agentpick strong{font-size:14px}
+.ar-social-title{position:relative;z-index:2;margin:0 2px 9px;color:#ff6b79;font-size:11px;font-weight:800;letter-spacing:.16em}
+.ar-socials{position:relative;z-index:2;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin-bottom:14px}
+.ar-social{min-width:0;min-height:78px;text-decoration:none;color:#f7f5f8;border:1px solid #49202a;border-radius:15px;background:linear-gradient(145deg,#190b12,#08090f 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-size:11px;font-weight:650;box-shadow:inset 0 1px 9px #ff263814}
+.ar-social span{font-size:25px;line-height:1;text-shadow:0 0 12px #ff2638}
+.ar-tools{position:relative;z-index:2;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:0 0 14px}
+.ar-tool{min-height:88px;border:1px solid #54202a;border-radius:17px;background:linear-gradient(145deg,#190b12,#08090f 65%);color:#f5f2f5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;box-shadow:inset 0 1px 10px #ff263814,0 0 12px #ff26380b;font-weight:600;font-size:12px}
+.ar-tool .ar-ico{font-size:28px;color:#ff3448;text-shadow:0 0 12px #ff2438;line-height:1}
+.ar-tool.wide{grid-column:span 2}
+@keyframes ar-ring{to{rotate:360deg}}@keyframes ar-pulse{0%,100%{transform:scale(.97);filter:brightness(.95)}50%{transform:scale(1.035);filter:brightness(1.22)}}
+body[data-v=home] #nav{background:#09080eee;border-top:1px solid #571421;box-shadow:0 -8px 25px #ff172522}
+body[data-v=home] #nav button{color:#b8b7c2}
+body[data-v=home] #nav [data-g=home]{color:#ff4054;text-shadow:0 0 12px #ff253b}
+@media(max-width:380px){#arin-red-home{padding-left:10px;padding-right:10px}.ar-status,.ar-agentpick{padding:7px;font-size:11px}.ar-orb{width:140px;height:140px}.ar-tool{min-height:78px;font-size:11px}.ar-social{font-size:10px;min-height:70px}}
+@media(prefers-reduced-motion:reduce){.ar-orb,.ar-orb-stage:before,.ar-orb-stage:after{animation:none!important}}
+
 </style></head><body data-v="home">
 <div id="banner"></div>
 <div id="top"><b class="mono">ARIM AI</b><span id="ver"></span></div>
 <div id="grid">
 <section class="sec" id="s-world"><div class="ttl mono">● SAT-LINK FEED</div><div class="globe"></div><div class="ttl mono">TODAY HEADLINES <button class="tabs" style="background:none;border:0;color:var(--m)" onclick="news()">↻</button></div><div id="news"></div></section>
 
-<section class="sec" id="s-home"><div class="scene" id="scene"></div>
-<div class="town-footer"><div><span class="pulse-dot"></span> <b id="st">ARIN NETWORK READY</b><small>Tap any building, menu or quick action</small></div></div></section>
+<section class="sec" id="s-home">
+<div id="arin-red-home">
+<header class="ar-head">
+<button class="ar-menu" aria-label="Open menu" onclick="go('more')">☰</button>
+<div class="ar-brand"><span class="ar-mark">A</span><div><strong>ARIN AI</strong><small>Your Smart AI Assistant</small></div></div>
+<button class="ar-pro" onclick="go('more')">♛ Pro</button><button class="ar-bell" aria-label="Notifications" onclick="go('more')">♧</button>
+</header>
+<div class="ar-hero">
+<div class="ar-status"><b>● Online</b><small>Ready to help...</small></div>
+<div class="ar-orb-stage"><div class="ar-orb"><div class="ar-core"><i>Λ</i>ARIN</div></div></div>
+<button class="ar-agentpick" onclick="go('chat');tab('a')"><small>AI Agent</small><strong>ARIN Core　⌄</strong></button>
+</div>
+<div class="ar-social-title">YOUR APPS</div>
+<div class="ar-socials">
+<a class="ar-social" href="https://web.whatsapp.com/" target="_blank" rel="noopener"><span>☏</span>WhatsApp</a>
+<a class="ar-social" href="https://web.telegram.org/" target="_blank" rel="noopener"><span>➤</span>Telegram</a>
+<a class="ar-social" href="https://m.youtube.com/" target="_blank" rel="noopener"><span>▶</span>YouTube</a>
+<a class="ar-social" href="https://m.facebook.com/" target="_blank" rel="noopener"><span>f</span>Facebook</a>
+<a class="ar-social" href="https://www.messenger.com/" target="_blank" rel="noopener"><span>ϟ</span>Messenger</a>
+</div>
+<div class="ar-tools">
+<button class="ar-tool" onclick="go('media')"><span class="ar-ico">▶</span>Media</button>
+<button class="ar-tool" onclick="go('chat');tab('a')"><span class="ar-ico">⌂</span>Agent Town</button>
+<button class="ar-tool" onclick="go('more')"><span class="ar-ico">♧</span>Memory</button>
+<button class="ar-tool" onclick="go('more')"><span class="ar-ico">‹/›</span>Skills</button>
+<button class="ar-tool wide" onclick="go('more')"><span class="ar-ico">▦</span>হিসাব</button>
+<button class="ar-tool wide" onclick="go('chat');tab('v')"><span class="ar-ico">♩</span>Voices</button>
+<button class="ar-tool wide" onclick="go('more')"><span class="ar-ico">⚙</span>Settings</button>
+</div>
+</div></section>
 
 <section class="sec" id="s-hub"><div class="ttl mono">● VISUAL HUB</div><div id="hubout" style="text-align:center;font-size:13px;color:var(--m)">What do you want to see? Tap one or type below.</div>
  <div class="pr" onclick="hub('rocket blueprint')"><b>01</b>&nbsp; Draw a rocket blueprint</div><div class="pr" onclick="hub('black hole bending light')"><b>02</b>&nbsp; Show how a black hole bends light</div><div class="pr" onclick="hub('fusion reactor inside')"><b>03</b>&nbsp; Look inside a fusion reactor</div><div class="pr" onclick="hub('crewed mission to Mars')"><b>04</b>&nbsp; Plan a crewed mission to Mars</div>
