@@ -40,6 +40,7 @@ with db() as c:
         "create table if not exists memory(id integer primary key, uid int, text text);"
         "create table if not exists settings(k text primary key, v text);"
         "create table if not exists agent_memory(id integer primary key, uid int not null, agent text not null, text text not null, created_at text default current_timestamp);"
+        "create table if not exists agent_shared_chat(id integer primary key, uid int not null, speaker text not null, text text not null, created_at text default current_timestamp);"
     )
 
 
@@ -162,21 +163,30 @@ def chat():
             with db() as c:
                 c.execute("insert into agent_memory(uid,agent,text) values(?,?,?)",
                           (u["id"], name, last[len(prefix):]))
+    # The conversation is shared with all six agents; private memories remain isolated.
+    with db() as c:
+        c.execute("insert into agent_shared_chat(uid,speaker,text) values(?,?,?)", (u["id"], "USER", last))
+    shared_chat = db().execute(
+        "select speaker,text from agent_shared_chat where uid=? order by id desc limit 40", (u["id"],)).fetchall()
     general = [r["text"] for r in db().execute("select text from memory where uid=?", (u["id"],))]
     private = [r["text"] for r in db().execute(
         "select text from agent_memory where uid=? and agent=? order by id desc limit 30", (u["id"], name))]
     system = get_setting("persona", PERSONA) + "\n\n" + AGENTS[name]
-    system += "\nYou have a private memory store belonging only to you. Do not claim to know another agent's private memories."
+    system += "\nAll six agents are silent listeners to this same shared conversation. You are the selected speaking agent. Other agents can use this shared conversation as context, but their private memories are not shared."
+    system += "\nYou may recommend handing a task to another named agent when useful; do not claim a handoff happened unless the user or interface confirms it."
     if general:
         system += "\nShared user notes: " + "; ".join(general[-30:])
     if private:
         system += "\nYour private memories: " + "; ".join(reversed(private))
+    context = [{"role": "user" if r["speaker"] == "USER" else "assistant",
+                "content": "[" + r["speaker"] + "] " + r["text"]} for r in reversed(shared_chat)]
     try:
-        answer = call_model(system, [{"role": "user" if m.get("role") == "user" else "assistant",
-                                     "content": str(m.get("text", ""))} for m in msgs])
+        answer = call_model(system, context[-40:])
     except Exception:
         return jsonify(error="AI service is busy or unavailable. Check AI_URL / AI_KEY."), 502
-    return jsonify(reply=answer, agent=name)
+    with db() as c:
+        c.execute("insert into agent_shared_chat(uid,speaker,text) values(?,?,?)", (u["id"], name, answer))
+    return jsonify(reply=answer, agent=name, shared_with=list(AGENTS.keys()))
 
 
 @app.post("/api/team/run")
@@ -218,6 +228,42 @@ def team_run():
         results.append({"agent": name, "reply": contribution})
         previous += "\n\n" + name + ": " + contribution
     return jsonify(task=task, team=chosen, team_size=len(chosen), final=results[-1]["reply"], contributions=results)
+
+
+@app.post("/api/agents/transfer")
+def agent_transfer():
+    u = current_user()
+    if not u:
+        return jsonify(error="login"), 401
+    data = request.json or {}
+    source, target = valid_agent(data.get("from")), valid_agent(data.get("to"))
+    task = str(data.get("task", "")).strip()
+    if not source or not target or source == target:
+        return jsonify(error="choose two different valid agents"), 400
+    if not task or len(task) > 8000:
+        return jsonify(error="task must be 1-8000 characters"), 400
+    with db() as c:
+        c.execute("insert into agent_shared_chat(uid,speaker,text) values(?,?,?)",
+                  (u["id"], source, "TRANSFER to " + target + ": " + task))
+    shared = db().execute(
+        "select speaker,text from agent_shared_chat where uid=? order by id desc limit 40", (u["id"],)).fetchall()
+    private = [r["text"] for r in db().execute(
+        "select text from agent_memory where uid=? and agent=? order by id desc limit 30", (u["id"], target))]
+    system = get_setting("persona", PERSONA) + "\n\n" + AGENTS[target]
+    system += "\nYou received a task transferred by " + source + ". Continue the work, use the shared conversation for context, and clearly report your result."
+    if private:
+        system += "\nYour private memories: " + "; ".join(reversed(private))
+    messages = [{"role": "user", "content": "[" + r["speaker"] + "] " + r["text"]}
+                for r in reversed(shared)]
+    messages.append({"role": "user", "content": "Please take ownership of this transferred task: " + task})
+    try:
+        answer = call_model(system, messages[-41:])
+    except Exception:
+        return jsonify(error="Transfer failed: AI service is unavailable."), 502
+    with db() as c:
+        c.execute("insert into agent_shared_chat(uid,speaker,text) values(?,?,?)",
+                  (u["id"], target, answer))
+    return jsonify(ok=True, from_agent=source, to_agent=target, reply=answer)
 
 
 @app.post("/api/agents/preferences")
