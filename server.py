@@ -417,5 +417,10 @@ def video_trim():
             shutil.rmtree(workdir, ignore_errors=True)
 
 
+@app.errorhandler(413)
+def upload_too_large(_error):
+    return jsonify(error="Upload is too large. Maximum video size is 60 MB."), 413
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8000)))
