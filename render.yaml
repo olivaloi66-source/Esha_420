@@ -3,16 +3,16 @@ services:
     name: arin-ai
     runtime: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn --workers 2 --threads 4 --timeout 120 app:app
+    startCommand: gunicorn --workers 2 --threads 4 --timeout 120 server:app
     healthCheckPath: /api/version
     envVars:
-      - key: OPENAI_API_KEY
+      - key: AI_URL
+        value: https://gen.pollinations.ai/v1/chat/completions
+      - key: AI_MODEL
+        value: openai
+      - key: AI_KEY
         sync: false
-      - key: OPENAI_MODEL
-        value: gpt-4o-mini
-      - key: ARIN_ADMIN_KEY
+      - key: ADMIN_KEY
         generateValue: true
-      - key: ARIN_VERSION
-        value: 1.0.0
       - key: ARIN_DB_PATH
-        value: /opt/render/project/src/arin.sqlite3
+        value: /opt/render/project/src/arim.db
