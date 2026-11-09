@@ -387,6 +387,7 @@ def video_trim():
 
     workdir = tempfile.mkdtemp(prefix="arin-video-")
     src, out = os.path.join(workdir, "input"), os.path.join(workdir, "trimmed.mp4")
+    success = False
     try:
         f.save(src)
         if os.path.getsize(src) > 60 * 1024 * 1024:
@@ -404,6 +405,7 @@ def video_trim():
             return jsonify(error="Could not create the trimmed video."), 422
         response = send_file(out, mimetype="video/mp4", as_attachment=True, download_name="arim-video.mp4")
         response.call_on_close(lambda: shutil.rmtree(workdir, ignore_errors=True))
+        success = True
         return response
     except subprocess.TimeoutExpired:
         return jsonify(error="Video processing took too long. Try a shorter clip."), 504
@@ -411,7 +413,7 @@ def video_trim():
         app.logger.exception("FFmpeg video trim failed")
         return jsonify(error="Could not trim this video. Check the selected time range and format."), 422
     finally:
-        if not os.path.exists(out):
+        if not success:
             shutil.rmtree(workdir, ignore_errors=True)
 
 
