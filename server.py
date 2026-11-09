@@ -70,6 +70,11 @@ def home():
     return send_from_directory(".", "index.html")
 
 
+@app.get("/app")
+def redesigned_app():
+    return send_from_directory(".", "app-design.html")
+
+
 @app.get("/arin-agent-town.css")
 def agent_town_stylesheet():
     return send_from_directory(".", "arin-agent-town.css", mimetype="text/css")
@@ -301,6 +306,19 @@ def get_agent_preferences():
         return jsonify(error="login"), 401
     count = int(get_setting("user_" + str(u["id"]) + "_team_size", "6"))
     return jsonify(team_size=max(1, min(6, count)))
+
+
+@app.post("/api/memory")
+def memory_add():
+    u = current_user()
+    if not u:
+        return jsonify(error="login"), 401
+    value = str((request.json or {}).get("text", "")).strip()
+    if not value or len(value) > 4000:
+        return jsonify(error="text must be 1-4000 characters"), 400
+    with db() as c:
+        cur = c.execute("insert into memory(uid,text) values(?,?)", (u["id"], value))
+    return jsonify(ok=True, id=cur.lastrowid)
 
 
 @app.get("/api/memory")
