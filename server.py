@@ -207,26 +207,35 @@ def team_run():
         return jsonify(error="select at least one agent"), 400
     if len(chosen) > 6:
         return jsonify(error="maximum six agents"), 400
+    with db() as c:
+        c.execute("insert into agent_shared_chat(uid,speaker,text) values(?,?,?)",
+                  (u["id"], "USER", "TEAM TASK: " + task))
     shared = [r["text"] for r in db().execute("select text from memory where uid=?", (u["id"],))]
-    results, previous = [], ""
+    history = db().execute(
+        "select speaker,text from agent_shared_chat where uid=? order by id desc limit 40", (u["id"],)).fetchall()
+    team_context = [{"role": "user" if r["speaker"] == "USER" else "assistant",
+                     "content": "[" + r["speaker"] + "] " + r["text"]} for r in reversed(history)]
+    results = []
     for name in chosen:
         private = [r["text"] for r in db().execute(
             "select text from agent_memory where uid=? and agent=? order by id desc limit 20", (u["id"], name))]
         system = get_setting("persona", PERSONA) + "\n\n" + AGENTS[name]
-        system += "\nYou are participating in a multi-agent team. Build on prior agents' findings and state uncertainty."
+        system += "\nYou are participating in a multi-agent team. Build on earlier agents' findings, check their work, and state uncertainty."
+        system += "\nAll team contributions and the shared user conversation are visible to you. Your private memories are visible only to you."
         if shared:
             system += "\nShared user notes: " + "; ".join(shared[-20:])
         if private:
             system += "\nYour private memories: " + "; ".join(reversed(private))
-        prompt = "Team task: " + task
-        if previous:
-            prompt += "\n\nPrevious agents' contributions:\n" + previous
+        prompt = "Work on this team task: " + task + ". Use the previous agents' contributions in the conversation as context."
         try:
-            contribution = call_model(system, [{"role": "user", "content": prompt}])
+            contribution = call_model(system, (team_context + [{"role": "user", "content": prompt}])[-40:])
         except Exception:
             return jsonify(error="Team stopped: AI service failed while " + name + " was working.", completed=results), 502
         results.append({"agent": name, "reply": contribution})
-        previous += "\n\n" + name + ": " + contribution
+        with db() as c:
+            c.execute("insert into agent_shared_chat(uid,speaker,text) values(?,?,?)",
+                      (u["id"], name, contribution))
+        team_context.append({"role": "assistant", "content": "[" + name + "] " + contribution})
     return jsonify(task=task, team=chosen, team_size=len(chosen), final=results[-1]["reply"], contributions=results)
 
 
@@ -253,7 +262,8 @@ def agent_transfer():
     system += "\nYou received a task transferred by " + source + ". Continue the work, use the shared conversation for context, and clearly report your result."
     if private:
         system += "\nYour private memories: " + "; ".join(reversed(private))
-    messages = [{"role": "user", "content": "[" + r["speaker"] + "] " + r["text"]}
+    messages = [{"role": "user" if r["speaker"] == "USER" else "assistant",
+                 "content": "[" + r["speaker"] + "] " + r["text"]}
                 for r in reversed(shared)]
     messages.append({"role": "user", "content": "Please take ownership of this transferred task: " + task})
     try:
