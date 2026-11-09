@@ -4,7 +4,7 @@ body{background:radial-gradient(ellipse at 50% -15%,#12304a 0,#07111f 38%,#02071
 #top{background:rgba(3,10,20,.9);border-bottom:1px solid #17465d;position:sticky;top:0;z-index:20;backdrop-filter:blur(14px)}
 #top b{letter-spacing:.2em;text-shadow:0 0 16px var(--glow)}
 #grid{max-width:1500px;margin:auto;padding:14px}
-#s-home{display:block!important;grid-column:1/-1;min-width:0;overflow:hidden;background:linear-gradient(145deg,rgba(7,23,39,.97),rgba(3,10,22,.98));border:1px solid #1a5068;box-shadow:0 0 35px rgba(0,190,255,.09),inset 0 0 35px rgba(0,151,210,.035);padding:clamp(12px,2vw,24px)}
+#s-home{display:block;grid-column:1/-1;min-width:0;overflow:hidden;background:linear-gradient(145deg,rgba(7,23,39,.97),rgba(3,10,22,.98));border:1px solid #1a5068;box-shadow:0 0 35px rgba(0,190,255,.09),inset 0 0 35px rgba(0,151,210,.035);padding:clamp(12px,2vw,24px)}
 .town-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0 0 14px}
 .town-head h1{font:800 clamp(22px,4vw,38px)/1.05 ui-monospace,monospace;letter-spacing:.13em;margin:4px 0;color:#f0fbff;text-shadow:0 0 20px rgba(37,210,255,.2)}
 .town-head h1 span{color:#39ddff}
