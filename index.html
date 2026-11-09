@@ -336,6 +336,8 @@ body[data-v="home"] #nav [data-g="home"]{color:#ff4054!important;text-shadow:0 0
 <nav id="nav"><button data-g="home" onclick="go('home')">Home</button><button data-g="chat" onclick="go('chat')">Tools</button><button data-g="media" onclick="go('media')">History</button><button data-g="world" onclick="go('world')">Favorites</button><button data-g="more" onclick="go('more')">Profile</button></nav>
 <script>
 const $=id=>document.getElementById(id);
+// Escape untrusted text before inserting it into HTML templates.
+function escapeHTML(value){return String(value??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#39;");}
 let activeAgent="ARIN";function setTownAgent(name){activeAgent=name;const s=$("arinAgentSelect");if(s&&s.value!==name)s.value=name;const hint=$("agentHint");if(hint)hint.textContent=name+" is selected. Your next message will be answered by "+name+".";const status=$("st");if(status)status.textContent=name+" SELECTED";}function selectTownAgent(name){setTownAgent(name);go("chat");tab("v");}let token=localStorage.t||"",msgs=[],L=localStorage.l||"bn-BD",rec=null;
 document.documentElement.dataset.t=localStorage.th||"";
 async function api(p,o={}){o.headers={...(o.body&&typeof o.body==="string"?{"Content-Type":"application/json"}:{}),...(token?{Authorization:"Bearer "+token}:{}),...(o.headers||{})};
@@ -371,9 +373,9 @@ function mic(){const S=window.SpeechRecognition||window.webkitSpeechRecognition;
  rec.onend=()=>{if($("st").textContent.includes("listening"))$("st").textContent="● ARIM is ready"};rec.start()}
 function stopAll(){try{rec&&rec.abort()}catch(e){}if(window.speechSynthesis)speechSynthesis.cancel();$("st").textContent="● ARIM is ready"}
 async function memory(quiet){const j=await J("/api/memory");const n=(j.items||[]).length;$("mc").textContent=n+" saved";if(quiet)return;
- $("mem").innerHTML=(j.items||[]).map(i=>`<div style="padding:6px 0">${i.text.replace(/</g,"&lt;")} <button class="btn" style="padding:2px 8px" onclick="del(${i.id})">delete</button></div>`).join("")||"No memory yet. Say: remember ... / মনে রাখো ..."}
+ $("mem").innerHTML=(j.items||[]).map(i=>`<div style="padding:6px 0">${escapeHTML(i.text)} <button class="btn" style="padding:2px 8px" onclick="del(${i.id})">delete</button></div>`).join("")||"No memory yet. Say: remember ... / মনে রাখো ..."}
 async function del(id){await api("/api/memory/"+id,{method:"DELETE"});memory()}
-async function news(){const j=await J("/api/news");$("news").innerHTML=(j.items||[]).map((t,i)=>`<div class="pr"><b>0${i+1}</b>&nbsp; ${t.replace(/</g,"&lt;")}</div>`).join("")||"<div style='font-size:13px;color:var(--m)'>News unavailable right now.</div>"}
+async function news(){const j=await J("/api/news");$("news").innerHTML=(j.items||[]).map((t,i)=>`<div class="pr"><b>0${i+1}</b>&nbsp; ${escapeHTML(t)}</div>`).join("")||"<div style='font-size:13px;color:var(--m)'>News unavailable right now.</div>"}
 function hub(q){q=(q||"").trim();if(!q)return;$("hubout").innerHTML="Drawing...";const im=new Image();im.onload=()=>{$("hubout").innerHTML="";$("hubout").append(im)};
  im.onerror=()=>$("hubout").textContent="Could not draw this now. Try again.";im.src="https://gen.pollinations.ai/image/"+encodeURIComponent(q+", futuristic blueprint, dark background, cyan lines")}
 let img=null,rot=0,flip=false,gray=false;
