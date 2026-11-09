@@ -70,6 +70,11 @@ def home():
     return send_from_directory(".", "index.html")
 
 
+@app.get("/arin-agent-town.css")
+def agent_town_stylesheet():
+    return send_from_directory(".", "arin-agent-town.css", mimetype="text/css")
+
+
 @app.post("/api/start")
 def start():
     # No password: every device gets its own private token automatically.

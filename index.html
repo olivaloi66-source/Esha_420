@@ -31,30 +31,13 @@ body[data-v=home] #nav [data-g=home],body[data-v=chat] #nav [data-g=chat],body[d
 #banner{display:none;background:var(--a);color:#001014;padding:10px;text-align:center;font-size:13px;cursor:pointer}
 .globe{width:150px;height:150px;border-radius:50%;margin:8px auto 14px;background:radial-gradient(circle at 35% 30%,#2f7fb8,#0c2a4d 55%,#050f24);box-shadow:0 0 40px var(--a)}
 img,video,canvas{max-width:100%;border-radius:8px}label.btn{display:inline-block}
-</style></head><body data-v="home">
+</style><link rel="stylesheet" href="/arin-agent-town.css"></head><body data-v="home">
 <div id="banner"></div>
 <div id="top"><b class="mono">ARIM AI</b><span id="ver"></span></div>
 <div id="grid">
 <section class="sec" id="s-world"><div class="ttl mono">● SAT-LINK FEED</div><div class="globe"></div><div class="ttl mono">TODAY HEADLINES <button class="tabs" style="background:none;border:0;color:var(--m)" onclick="news()">↻</button></div><div id="news"></div></section>
 
-<section class="sec" id="s-home"><div id="hm">
- <div>
-  <div class="tile" style="border-color:#22d3ee" onclick="go('more')"><i style="color:#22d3ee">MEMORY</i><span id="mc">0 saved</span></div>
-  <div class="tile" style="border-color:#34d399" onclick="go('media')"><i style="color:#34d399">SKILLS</i><span>Chat·Photo·Video</span></div>
-  <div class="tile" style="border-color:#f87171" onclick="alert('Character: ARIM — friendly')"><i style="color:#f87171">CHARACTER</i><span>Friendly</span></div>
-  <div class="tile" style="border-color:#9aa7b4" onclick="go('more')"><i style="color:#9aa7b4">SETTING</i><span>Theme·Voice</span></div>
- </div>
- <svg viewBox="0 0 36 270" preserveAspectRatio="none" width="36" height="270" aria-hidden="true"><g fill="none" stroke-width="2" vector-effect="non-scaling-stroke"><polyline points="0,35 14,35 22,100 36,100" stroke="#22d3ee"/><polyline points="0,105 14,105 22,120 36,120" stroke="#34d399"/><polyline points="0,175 14,175 22,150 36,150" stroke="#f87171"/><polyline points="0,245 14,245 22,170 36,170" stroke="#9aa7b4"/></g></svg>
- <div id="pn">
-  <svg width="150" height="150" viewBox="0 0 260 260" aria-hidden="true"><defs>
-   <pattern id="d" width="4" height="4" patternUnits="userSpaceOnUse"><circle cx="1.5" cy="1.5" r=".9" fill="#5fb6ff"/></pattern>
-   <pattern id="f" width="3" height="3" patternUnits="userSpaceOnUse"><circle cx="1.2" cy="1.2" r=".9" fill="#fff"/></pattern>
-   <filter id="s"><feTurbulence baseFrequency=".8" numOctaves="2" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="12"/></filter></defs>
-   <circle class="ring" cx="130" cy="130" r="122" fill="none" stroke-width="5" stroke-dasharray="2 10"/>
-   <g filter="url(#s)"><path d="M130 34c-42 0-64 28-64 66 0 30-8 52-18 74-6 14-2 30 8 40h148c10-10 14-26 8-40-10-22-18-44-18-74 0-38-22-66-64-66z" fill="url(#d)"/><ellipse cx="130" cy="98" rx="27" ry="36" fill="url(#f)"/></g></svg>
-  <div id="st" style="font-size:12px;color:#c9d6df">● ARIM is ready</div>
-  <div class="row" style="justify-content:center"><button class="btn mono" style="border-color:#f87171;color:#f87171;background:#1a0b0e;font-size:11px" onclick="stopAll()">TERMINATE</button><button class="btn" aria-label="Mic" onclick="mic()">MIC</button></div>
- </div></div></section>
+<section class="sec" id="s-home"><div class="town-head"><div><div class="ttl mono">● ARIN COMMAND NETWORK</div><h1>AGENT <span>TOWN</span></h1><p>Six specialized agents · One intelligent network</p></div><div class="live-pill"><i></i> SYSTEM ONLINE</div></div><div class="city-scene"><div class="city-grid"></div><div class="city-horizon"></div><div class="city-core" id="pn"><div class="core-orbit orbit-a"></div><div class="core-orbit orbit-b"></div><div class="core-sphere"><span>ARIN</span><small>CORE AI</small></div><div class="core-base"></div><div class="core-caption">CENTRAL INTELLIGENCE</div></div><button class="agent-station station-arin" onclick="selectTownAgent('ARIN')"><b>ARIN</b><small>MAIN INTELLIGENCE</small><i>● ONLINE</i></button><button class="agent-station station-roni" onclick="selectTownAgent('RONI')"><b>RONI</b><small>CODING AGENT</small><i>● ONLINE</i></button><button class="agent-station station-diva" onclick="selectTownAgent('DIVA')"><b>DIVA</b><small>CREATIVE AGENT</small><i>● ONLINE</i></button><button class="agent-station station-zara" onclick="selectTownAgent('ZARA')"><b>ZARA</b><small>PERSONAL ASSISTANT</small><i>● ONLINE</i></button><button class="agent-station station-maya" onclick="selectTownAgent('MAYA')"><b>MAYA</b><small>COMPANION AGENT</small><i>● ONLINE</i></button><button class="agent-station station-nexus" onclick="selectTownAgent('NEXUS')"><b>NEXUS</b><small>ANALYSIS AGENT</small><i>● ONLINE</i></button><div class="city-label label-left">NEURAL DISTRICT <span>01—03</span></div><div class="city-label label-right">INTELLIGENCE DISTRICT <span>04—06</span></div></div><div class="town-footer"><div><span class="pulse-dot"></span><b id="st">ARIN NETWORK READY</b><small>Tap any station to select its agent</small></div><button class="btn mono" onclick="go('chat')">OPEN COMMAND CHAT ↗</button></div></section>
 
 <section class="sec" id="s-hub"><div class="ttl mono">● VISUAL HUB</div><div id="hubout" style="text-align:center;font-size:13px;color:var(--m)">What do you want to see? Tap one or type below.</div>
  <div class="pr" onclick="hub('rocket blueprint')"><b>01</b>&nbsp; Draw a rocket blueprint</div><div class="pr" onclick="hub('black hole bending light')"><b>02</b>&nbsp; Show how a black hole bends light</div><div class="pr" onclick="hub('fusion reactor inside')"><b>03</b>&nbsp; Look inside a fusion reactor</div><div class="pr" onclick="hub('crewed mission to Mars')"><b>04</b>&nbsp; Plan a crewed mission to Mars</div>
@@ -83,9 +66,10 @@ img,video,canvas{max-width:100%;border-radius:8px}label.btn{display:inline-block
  <div class="ttl mono" style="margin-top:16px">MEMORY</div><div id="mem" style="font-size:13px"></div>
  <div class="row"><button class="btn" onclick="admin()">Admin update</button></div></section>
 </div>
-<nav id="nav"><button data-g="home" onclick="go('home')">Home</button><button data-g="chat" onclick="go('chat')">Chat</button><button data-g="media" onclick="go('media')">Studio</button><button data-g="world" onclick="go('world')">World</button><button data-g="more" onclick="go('more')">More</button></nav>
+<nav id="nav"><button data-g="home" onclick="go('home')">Town</button><button data-g="chat" onclick="go('chat')">Chat</button><button data-g="media" onclick="go('media')">Studio</button><button data-g="world" onclick="go('world')">World</button><button data-g="more" onclick="go('more')">More</button></nav>
 <script>
-const $=id=>document.getElementById(id);let token=localStorage.t||"",msgs=[],L=localStorage.l||"bn-BD",rec=null;
+const $=id=>document.getElementById(id);
+function selectTownAgent(name){const s=$("arinAgentSelect");if(s){s.value=name;s.dispatchEvent(new Event("change"));}go("chat");}let token=localStorage.t||"",msgs=[],L=localStorage.l||"bn-BD",rec=null;
 document.documentElement.dataset.t=localStorage.th||"";
 async function api(p,o={}){o.headers={...(o.body&&typeof o.body==="string"?{"Content-Type":"application/json"}:{}),...(token?{Authorization:"Bearer "+token}:{}),...(o.headers||{})};
  const r=await fetch(p,o);if(r.status===401&&token&&p!=="/api/start"){localStorage.removeItem("t");token="";await init()}return r}
