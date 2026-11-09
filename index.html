@@ -140,6 +140,39 @@ body[data-v="home"] #nav [data-g="home"]{color:#ff4054!important;text-shadow:0 0
 @media(min-width:700px){body[data-v="home"] #arin-red-home{padding-left:max(28px,calc((100vw - 900px)/2));padding-right:max(28px,calc((100vw - 900px)/2))}body[data-v="home"] .ar-hero{height:350px}body[data-v="home"] .ar-socials,body[data-v="home"] .ar-tools{gap:14px}}
 @media(max-width:390px){body[data-v="home"] #arin-red-home{padding-left:12px;padding-right:12px}body[data-v="home"] .ar-status,body[data-v="home"] .ar-agentpick{padding:7px 8px}body[data-v="home"] .ar-status small{font-size:10px}body[data-v="home"] .ar-agentpick strong{font-size:11px}body[data-v="home"] .ar-social{min-height:68px}body[data-v="home"] .ar-tool{min-height:76px}}
 @media(prefers-reduced-motion:reduce){body[data-v="home"] .ar-orb,body[data-v="home"] .ar-orb-stage:before,body[data-v="home"] .ar-orb-stage:after{animation:none!important}}
+
+/* Reference-home additions: nine accent choices and a separate animated agent town */
+.ar-palette-wrap{position:relative;z-index:2;margin:4px 0 18px}
+.ar-palette{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:8px}
+.ar-swatch{height:32px;border-radius:20px;border:2px solid #ffffff55;background:var(--sw);box-shadow:0 0 12px color-mix(in srgb,var(--sw),transparent 45%)}
+.ar-swatch:focus-visible{outline:2px solid white;outline-offset:3px}
+#arin-town-view{position:relative;z-index:3;padding:8px 0 22px}
+#arin-town-view[hidden]{display:none!important}
+.town-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;color:#fff;font-size:12px;letter-spacing:.1em}
+.town-toolbar span{color:#45e7a0;font-size:9px}
+.ar-back{border:1px solid #873043;background:#14070d;color:#fff;border-radius:12px;padding:9px 12px}
+.town-intro{color:#c8c2cb;font-size:12px}
+.town-floor{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:12px;border:1px solid #57202c;border-radius:18px;background:radial-gradient(ellipse at 50% 0,#35101a,#09070c 75%);box-shadow:inset 0 0 35px #ff24351c}
+.town-agent{min-width:0;position:relative;text-align:center;padding:10px 6px 12px;border:1px solid #54212c;border-radius:14px;background:linear-gradient(160deg,#1a0b12,#08080d);overflow:hidden}
+.agent-name{color:#ff5368;font-weight:800;letter-spacing:.12em;font-size:12px}
+.agent-name small{display:block;color:#aaa5b1;font-size:9px;font-weight:500;letter-spacing:0}
+.agent-avatar{position:relative;width:78px;height:76px;margin:8px auto 0;display:grid;place-items:center;font-size:44px;animation:agent-work 2.4s ease-in-out infinite;filter:drop-shadow(0 0 10px #ff344855)}
+@keyframes agent-work{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-5px) rotate(2deg)}}
+.talk-dots{position:absolute;right:-3px;top:0;display:none;gap:3px;padding:5px 7px;border:1px solid #ff5269;border-radius:12px;background:#18060d}
+.talk-dots b{width:4px;height:4px;border-radius:50%;background:#ff7182;animation:talk-dot .7s ease-in-out infinite alternate}
+.talk-dots b:nth-child(2){animation-delay:.18s}.talk-dots b:nth-child(3){animation-delay:.36s}
+@keyframes talk-dot{to{transform:translateY(-4px);opacity:.35}}
+.town-agent.talking .talk-dots{display:flex}
+.town-agent.talking .agent-avatar{animation:agent-talk .45s ease-in-out infinite alternate}
+@keyframes agent-talk{to{transform:translateY(-5px) scale(1.06)}}
+.agent-desk{height:29px;margin:0 auto 9px;max-width:125px;display:flex;align-items:center;justify-content:space-around;border-top:5px solid #752638;border-radius:4px;background:linear-gradient(#2a111b,#100a10);color:#e7a3ad;font-size:13px}
+.pc-screen{padding:3px 6px;border:1px solid #ff5368;border-radius:3px;background:#07141a;color:#62f5d0;font:700 7px monospace;box-shadow:0 0 9px #22d3ee55}
+.town-agent>button{border:1px solid #a52a41;border-radius:10px;background:#210a12;color:#fff;padding:7px 8px;font-size:10px}
+#arin-red-home[data-hue] .ar-hero{filter:hue-rotate(var(--arin-hue))}
+#arin-red-home[data-hue] .ar-socials,#arin-red-home[data-hue] .ar-tools,#arin-red-home[data-hue] .ar-palette-wrap{filter:hue-rotate(var(--arin-hue))}
+@media(min-width:600px){.town-floor{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.agent-avatar,.talk-dots b{animation:none!important}}
+
 </style></head><body data-v="home">
 <div id="banner"></div>
 <div id="top"><b class="mono">ARIM AI</b><span id="ver"></span></div>
@@ -168,12 +201,39 @@ body[data-v="home"] #nav [data-g="home"]{color:#ff4054!important;text-shadow:0 0
 </div>
 <div class="ar-tools">
 <button class="ar-tool" onclick="go('media')"><span class="ar-ico">▶</span>Media</button>
-<button class="ar-tool" onclick="go('chat');tab('a')"><span class="ar-ico">⌂</span>Agent Town</button>
+<button class="ar-tool" onclick="openTown()"><span class="ar-ico">⌂</span>Agent Town</button>
 <button class="ar-tool" onclick="go('more')"><span class="ar-ico">♧</span>Memory</button>
 <button class="ar-tool" onclick="go('more')"><span class="ar-ico">‹/›</span>Skills</button>
 <button class="ar-tool wide" onclick="go('more')"><span class="ar-ico">▦</span>হিসাব</button>
 <button class="ar-tool wide" onclick="go('chat');tab('v')"><span class="ar-ico">♩</span>Voices</button>
 <button class="ar-tool wide" onclick="go('more')"><span class="ar-ico">⚙</span>Settings</button>
+</div>
+
+<div class="ar-palette-wrap">
+  <div class="ar-social-title">CHOOSE YOUR COLOR</div>
+  <div class="ar-palette" aria-label="Choose interface color">
+    <button class="ar-swatch" style="--sw:#ff3048" aria-label="Red" onclick="chooseColor('#ff3048')"></button>
+    <button class="ar-swatch" style="--sw:#ff7a18" aria-label="Orange" onclick="chooseColor('#ff7a18')"></button>
+    <button class="ar-swatch" style="--sw:#ffd43b" aria-label="Gold" onclick="chooseColor('#ffd43b')"></button>
+    <button class="ar-swatch" style="--sw:#28d17c" aria-label="Green" onclick="chooseColor('#28d17c')"></button>
+    <button class="ar-swatch" style="--sw:#22d3ee" aria-label="Cyan" onclick="chooseColor('#22d3ee')"></button>
+    <button class="ar-swatch" style="--sw:#3987ff" aria-label="Blue" onclick="chooseColor('#3987ff')"></button>
+    <button class="ar-swatch" style="--sw:#8b5cf6" aria-label="Purple" onclick="chooseColor('#8b5cf6')"></button>
+    <button class="ar-swatch" style="--sw:#ec4899" aria-label="Pink" onclick="chooseColor('#ec4899')"></button>
+    <button class="ar-swatch" style="--sw:#f1f5f9" aria-label="Silver" onclick="chooseColor('#f1f5f9')"></button>
+  </div>
+</div>
+<div id="arin-town-view" hidden>
+  <div class="town-toolbar"><button class="ar-back" onclick="closeTown()">← Home</button><strong>AGENT TOWN</strong><span>6 ACTIVE AGENTS</span></div>
+  <p class="town-intro">এজেন্টদের কাজ দেখুন। কথা বলতে যেকোনো এজেন্ট নির্বাচন করুন।</p>
+  <div class="town-floor">
+    <div class="town-agent" data-agent="ARIN"><div class="agent-name">ARIN <small>Coordinator</small></div><div class="agent-avatar">🤖<i class="talk-dots"><b></b><b></b><b></b></i></div><div class="agent-desk"><span>▰</span><span class="pc-screen">AI</span><span>⌨</span></div><button onclick="selectTownAgent('ARIN')">Talk to ARIN</button></div>
+    <div class="town-agent" data-agent="RONI"><div class="agent-name">RONI <small>Developer</small></div><div class="agent-avatar">👨‍💻<i class="talk-dots"><b></b><b></b><b></b></i></div><div class="agent-desk"><span>▰</span><span class="pc-screen">CODE</span><span>⌨</span></div><button onclick="selectTownAgent('RONI')">Talk to RONI</button></div>
+    <div class="town-agent" data-agent="DIVA"><div class="agent-name">DIVA <small>Creative</small></div><div class="agent-avatar">👩‍🎨<i class="talk-dots"><b></b><b></b><b></b></i></div><div class="agent-desk"><span>▰</span><span class="pc-screen">ART</span><span>⌨</span></div><button onclick="selectTownAgent('DIVA')">Talk to DIVA</button></div>
+    <div class="town-agent" data-agent="ZARA"><div class="agent-name">ZARA <small>Assistant</small></div><div class="agent-avatar">👩‍💼<i class="talk-dots"><b></b><b></b><b></b></i></div><div class="agent-desk"><span>▰</span><span class="pc-screen">PLAN</span><span>⌨</span></div><button onclick="selectTownAgent('ZARA')">Talk to ZARA</button></div>
+    <div class="town-agent" data-agent="MAYA"><div class="agent-name">MAYA <small>Companion</small></div><div class="agent-avatar">👩‍🚀<i class="talk-dots"><b></b><b></b><b></b></i></div><div class="agent-desk"><span>▰</span><span class="pc-screen">CHAT</span><span>⌨</span></div><button onclick="selectTownAgent('MAYA')">Talk to MAYA</button></div>
+    <div class="town-agent" data-agent="NEXUS"><div class="agent-name">NEXUS <small>Analyst</small></div><div class="agent-avatar">🧑‍🔬<i class="talk-dots"><b></b><b></b><b></b></i></div><div class="agent-desk"><span>▰</span><span class="pc-screen">DATA</span><span>⌨</span></div><button onclick="selectTownAgent('NEXUS')">Talk to NEXUS</button></div>
+  </div>
 </div>
 </div></section>
 
@@ -212,6 +272,19 @@ document.documentElement.dataset.t=localStorage.th||"";
 async function api(p,o={}){o.headers={...(o.body&&typeof o.body==="string"?{"Content-Type":"application/json"}:{}),...(token?{Authorization:"Bearer "+token}:{}),...(o.headers||{})};
  const r=await fetch(p,o);if(r.status===401&&token&&p!=="/api/start"){localStorage.removeItem("t");token="";await init()}return r}
 const J=async(p,o)=>{const r=await api(p,o);return r.json().catch(()=>({}))};
+
+function chooseColor(hex){
+ const hue=({ '#ff3048':'0deg','#ff7a18':'24deg','#ffd43b':'43deg','#28d17c':'125deg','#22d3ee':'174deg','#3987ff':'210deg','#8b5cf6':'265deg','#ec4899':'320deg','#f1f5f9':'0deg' })[hex]||'0deg';
+ $('arin-red-home').style.setProperty('--arin-hue',hue);
+ $('arin-red-home').setAttribute('data-hue','1');
+ localStorage.setItem('arinAccent',hex);
+ document.querySelectorAll('.ar-swatch').forEach(b=>b.style.outline=b.getAttribute('aria-label')===({ '#ff3048':'Red','#ff7a18':'Orange','#ffd43b':'Gold','#28d17c':'Green','#22d3ee':'Cyan','#3987ff':'Blue','#8b5cf6':'Purple','#ec4899':'Pink','#f1f5f9':'Silver' })[hex]?'2px solid white':'none');
+}
+function openTown(){ $('arin-town-view').hidden=false;document.querySelector('.ar-social-title').scrollIntoView({block:'start',behavior:'smooth'});$('arin-town-view').scrollIntoView({block:'start',behavior:'smooth'}); }
+function closeTown(){ $('arin-town-view').hidden=true;window.scrollTo({top:0,behavior:'smooth'}); }
+function agentTalking(name,on){document.querySelectorAll('.town-agent').forEach(el=>el.classList.toggle('talking',on&&el.dataset.agent===name));}
+
+if(localStorage.getItem("arinAccent"))chooseColor(localStorage.getItem("arinAccent"));
 function go(v){document.body.dataset.v=v;window.scrollTo(0,0);if(v==="more")memory()}
 function theme(t){localStorage.th=t;document.documentElement.dataset.t=t}
 function lang(){L=L.startsWith("bn")?"en-US":"bn-BD";localStorage.l=L;$("lg").textContent=L.startsWith("bn")?"BN":"EN"}
@@ -219,10 +292,10 @@ function tab(k){$("pv").style.display=k==="v"?"block":"none";$("pa").style.displ
  ["v","a","n"].forEach(x=>$("t"+x).className=x===k?"on":"")}
 function add(role,text){const d=document.createElement("div");d.className="m "+(role==="user"?"u":"");d.textContent=text;$("log").append(d);$("log").scrollTop=1e9}
 async function send(text){text=(text||$("t").value).trim();if(!text)return;$("t").value="";go(innerWidth<900?"chat":document.body.dataset.v);add("user",text);msgs.push({role:"user",text});
- $("st").textContent="● ARIM is thinking";const j=await J("/api/chat",{method:"POST",body:JSON.stringify({messages:msgs,agent:activeAgent})});
- const r=j.reply||j.error||"Error";add("model",r);msgs.push({role:"model",text:r});$("st").textContent="● ARIM is ready";if(j.reply){speak(r);memory(true)}}
-function speak(t){if(!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=L;
- u.onstart=()=>$("st").textContent="● ARIM is speaking";u.onend=()=>$("st").textContent="● ARIM is ready";speechSynthesis.speak(u)}
+ $("st").textContent="● ARIM is thinking";agentTalking(activeAgent,true);const j=await J("/api/chat",{method:"POST",body:JSON.stringify({messages:msgs,agent:activeAgent})});
+ const r=j.reply||j.error||"Error";add("model",r);msgs.push({role:"model",text:r});$("st").textContent="● ARIM is ready";if(j.reply){speak(r);memory(true)}else agentTalking(activeAgent,false)}
+function speak(t){if(!window.speechSynthesis){agentTalking(activeAgent,false);return}speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=L;
+ u.onstart=()=>$("st").textContent="● ARIM is speaking";u.onend=()=>{$("st").textContent="● ARIM is ready";agentTalking(activeAgent,false)};u.onerror=()=>agentTalking(activeAgent,false);speechSynthesis.speak(u)}
 function mic(){const S=window.SpeechRecognition||window.webkitSpeechRecognition;if(!S){alert("Use Chrome for voice");return}
  stopAll();rec=new S();rec.lang=L;$("st").textContent="● ARIM is listening";rec.onresult=e=>send(e.results[0][0].transcript);
  rec.onend=()=>{if($("st").textContent.includes("listening"))$("st").textContent="● ARIM is ready"};rec.start()}
