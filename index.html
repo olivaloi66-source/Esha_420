@@ -204,6 +204,26 @@ body[data-v="home"] #nav [data-g="home"]{color:#ff4054!important;text-shadow:0 0
 @media(max-width:390px){.ar-town-city{height:190px}.ar-town-head strong{font-size:13px}.ar-mini-agent{height:65px}.ar-mini-agent:nth-child(even){height:56px}.ar-mini-person{font-size:20px}.ar-home-chat input{font-size:12px;padding:0 13px}.ar-home-chat button{width:46px;height:46px}}
 @media(prefers-reduced-motion:reduce){.ar-town-reactor,.ar-mini-person{animation:none!important}}
 
+
+/* Final home scene refinement: horizontal holographic platform like the supplied reference */
+#arin-red-home{position:relative;isolation:isolate;overflow:hidden;background:radial-gradient(ellipse at 50% 29%,#25000b 0,#090207 47%,#030306 82%)}
+#arin-red-home .ar-hero{height:clamp(310px,83vw,440px);margin:0 -12px 2px;overflow:hidden;background:radial-gradient(ellipse at 50% 77%,#7e1027a8 0,transparent 36%),radial-gradient(ellipse at 50% 40%,#2a0610 0,transparent 65%)}
+#arin-red-home .ar-orb-stage{width:min(88vw,520px);height:100%;transform:translateY(-3px)}
+#arin-red-home .ar-orb-stage:before{width:92%;height:34%;top:56%;left:4%;transform:rotate(-7deg);border-width:3px;border-color:#ff334d #ffb0b9 #d30e36 #ff4058;animation:ar-ring 7s linear infinite}
+#arin-red-home .ar-orb-stage:after{width:112%;height:42%;top:52%;left:-6%;transform:rotate(8deg);border-width:3px;border-color:#ff354f #ff9ba8 #b50d32 #ff5269;animation:ar-ring 10s linear infinite reverse}
+#arin-red-home .ar-orb{width:clamp(176px,49vw,230px);height:clamp(176px,49vw,230px);z-index:2}
+#arin-red-home .ar-hero:after{content:"";position:absolute;z-index:0;left:8%;right:8%;bottom:4%;height:27%;border-radius:50%;background:repeating-radial-gradient(ellipse at center,transparent 0 16px,#ff304b88 17px 19px,transparent 20px 30px);filter:drop-shadow(0 0 10px #ff173c);transform:perspective(240px) rotateX(58deg);pointer-events:none}
+#arin-red-home .ar-orb-stage{z-index:1}
+#arin-red-home .ar-status,#arin-red-home .ar-agentpick{z-index:4;top:43%}
+#arin-red-home .ar-status{left:3%}
+#arin-red-home .ar-agentpick{right:3%}
+#arin-red-home .ar-social{border-color:#63202d;box-shadow:0 0 12px #ff20351c,inset 0 0 15px #ff20351c}
+#arin-red-home .ar-town-preview{border-width:2px;box-shadow:0 0 22px #ff203544,inset 0 0 24px #ff20351a}
+#arin-red-home .ar-town-city{height:clamp(205px,52vw,310px)}
+#arin-red-home .ar-tools .ar-tool{border-color:#762334;box-shadow:0 0 14px #ff20351b,inset 0 0 18px #ff20351c}
+@media(min-width:700px){#arin-red-home .ar-hero{height:420px}#arin-red-home .ar-orb{width:230px;height:230px}}
+@media(prefers-reduced-motion:reduce){#arin-red-home .ar-orb-stage:before,#arin-red-home .ar-orb-stage:after{animation:none!important}}
+
 </style></head><body data-v="home">
 <div id="banner"></div>
 <div id="top"><b class="mono">ARIM AI</b><span id="ver"></span></div>
