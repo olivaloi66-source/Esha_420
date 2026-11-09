@@ -70,6 +70,11 @@ def home():
     return send_from_directory(".", "index.html")
 
 
+@app.get("/app")
+def redesigned_app():
+    return send_from_directory(".", "app-design.html")
+
+
 @app.get("/arin-agent-town.css")
 def agent_town_stylesheet():
     return send_from_directory(".", "arin-agent-town.css", mimetype="text/css")
