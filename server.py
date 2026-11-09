@@ -70,6 +70,11 @@ def home():
     return send_from_directory(".", "index.html")
 
 
+@app.get("/mobile")
+def mobile_app():
+    return send_from_directory(".", "arin-mobile.html")
+
+
 @app.get("/arin-agent-town.css")
 def agent_town_stylesheet():
     return send_from_directory(".", "arin-agent-town.css", mimetype="text/css")
@@ -309,6 +314,38 @@ def memory_list():
     if not u:
         return jsonify(error="login"), 401
     rows = db().execute("select id,text from memory where uid=?", (u["id"],)).fetchall()
+    return jsonify(items=[dict(r) for r in rows])
+
+
+@app.delete("/api/memory/<int:mid>")
+def memory_delete(mid):
+    u = current_user()
+    if not u:
+        return jsonify(error="login"), 401
+    with db() as c:
+        c.execute("delete from memory where id=? and uid=?", (mid, u["id"]))
+    return jsonify(ok=True)
+
+
+@app.post("/api/memory")
+def memory_add():
+    u = current_user()
+    if not u:
+        return jsonify(error="login"), 401
+    value = str((request.json or {}).get("text", "")).strip()
+    if not value or len(value) > 4000:
+        return jsonify(error="text must be 1-4000 characters"), 400
+    with db() as c:
+        cur = c.execute("insert into memory(uid,text) values(?,?)", (u["id"], value))
+    return jsonify(ok=True, id=cur.lastrowid)
+
+
+@app.get("/api/memory")
+def memory_list():
+    u = current_user()
+    if not u:
+        return jsonify(error="login"), 401
+    rows = db().execute("select id,text from memory where uid=? order by id desc", (u["id"],)).fetchall()
     return jsonify(items=[dict(r) for r in rows])
 
 
