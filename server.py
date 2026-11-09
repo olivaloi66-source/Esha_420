@@ -308,6 +308,19 @@ def get_agent_preferences():
     return jsonify(team_size=max(1, min(6, count)))
 
 
+@app.post("/api/memory")
+def memory_add():
+    u = current_user()
+    if not u:
+        return jsonify(error="login"), 401
+    value = str((request.json or {}).get("text", "")).strip()
+    if not value or len(value) > 4000:
+        return jsonify(error="text must be 1-4000 characters"), 400
+    with db() as c:
+        cur = c.execute("insert into memory(uid,text) values(?,?)", (u["id"], value))
+    return jsonify(ok=True, id=cur.lastrowid)
+
+
 @app.get("/api/memory")
 def memory_list():
     u = current_user()
