@@ -224,6 +224,38 @@ body[data-v="home"] #nav [data-g="home"]{color:#ff4054!important;text-shadow:0 0
 @media(min-width:700px){#arin-red-home .ar-hero{height:420px}#arin-red-home .ar-orb{width:230px;height:230px}}
 @media(prefers-reduced-motion:reduce){#arin-red-home .ar-orb-stage:before,#arin-red-home .ar-orb-stage:after{animation:none!important}}
 
+
+/* ARIN home polish: consistent spacing, touch targets and safe-area handling */
+body[data-v="home"] #arin-red-home{min-height:calc(100svh - 62px);padding-bottom:max(22px,env(safe-area-inset-bottom))}
+body[data-v="home"] .ar-head{position:relative}
+body[data-v="home"] .ar-hero{isolation:isolate}
+body[data-v="home"] .ar-status,body[data-v="home"] .ar-agentpick{max-width:34%;backdrop-filter:blur(10px)}
+body[data-v="home"] .ar-socials{grid-template-columns:repeat(5,minmax(0,1fr))}
+body[data-v="home"] .ar-social,body[data-v="home"] .ar-tool{min-width:0;overflow-wrap:anywhere}
+body[data-v="home"] .ar-town-preview,body[data-v="home"] .ar-home-chat{margin-top:12px}
+body[data-v="home"] .ar-palette-wrap{padding-bottom:8px}
+body[data-v="home"] #nav{padding-bottom:env(safe-area-inset-bottom);height:calc(62px + env(safe-area-inset-bottom))}
+body[data-v="home"] #nav button{min-width:0;min-height:48px;touch-action:manipulation}
+@media(max-width:420px){
+ body[data-v="home"] .ar-head{gap:5px}
+ body[data-v="home"] .ar-brand strong{font-size:18px}
+ body[data-v="home"] .ar-pro{padding:7px 9px;font-size:12px}
+ body[data-v="home"] .ar-bell{font-size:20px;padding:5px}
+ body[data-v="home"] .ar-socials{gap:5px}
+ body[data-v="home"] .ar-social{border-radius:12px;padding:6px 2px}
+ body[data-v="home"] .ar-social span{font-size:22px}
+ body[data-v="home"] .ar-tools{gap:7px}
+ body[data-v="home"] .ar-tool{border-radius:14px}
+}
+@media(min-width:700px){
+ body[data-v="home"] #arin-red-home{max-width:980px;margin-inline:auto;padding-inline:32px}
+ body[data-v="home"] .ar-socials{gap:12px}
+ body[data-v="home"] .ar-tools{gap:12px}
+}
+@media(prefers-reduced-motion:reduce){
+ body[data-v="home"] *,body[data-v="home"] *:before,body[data-v="home"] *:after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+
 </style></head><body data-v="home">
 <div id="banner"></div>
 <div id="top"><b class="mono">ARIM AI</b><span id="ver"></span></div>
@@ -363,9 +395,25 @@ function lang(){L=L.startsWith("bn")?"en-US":"bn-BD";localStorage.l=L;$("lg").te
 function tab(k){$("pv").style.display=k==="v"?"block":"none";$("pa").style.display=k==="a"?"block":"none";$("pnote").style.display=k==="n"?"block":"none";
  ["v","a","n"].forEach(x=>$("t"+x).className=x===k?"on":"")}
 function add(role,text){const d=document.createElement("div");d.className="m "+(role==="user"?"u":"");d.textContent=text;$("log").append(d);$("log").scrollTop=1e9}
-async function send(text){text=(text||$("t").value).trim();if(!text)return;$("t").value="";go(innerWidth<900?"chat":document.body.dataset.v);add("user",text);msgs.push({role:"user",text});
- $("st").textContent="● ARIM is thinking";agentTalking(activeAgent,true);const j=await J("/api/chat",{method:"POST",body:JSON.stringify({messages:msgs,agent:activeAgent})});
- const r=j.reply||j.error||"Error";add("model",r);msgs.push({role:"model",text:r});$("st").textContent="● ARIM is ready";if(j.reply){speak(r);memory(true)}else agentTalking(activeAgent,false)}
+async function send(text){
+ text=(text||$("t").value).trim();if(!text)return;
+ $("t").value="";go(innerWidth<900?"chat":document.body.dataset.v);add("user",text);
+ msgs.push({role:"user",text});
+ const status=$("st");if(status)status.textContent="● ARIM is thinking";
+ agentTalking(activeAgent,true);
+ try{
+  const j=await J("/api/chat",{method:"POST",body:JSON.stringify({messages:msgs,agent:activeAgent})});
+  const reply=j.reply||j.error||"The assistant could not respond. Please try again.";
+  add("model",reply);
+  msgs.push({role:"model",text:reply});
+  if(status)status.textContent=j.reply?"● ARIM is ready":"● ARIM connection issue";
+  if(j.reply){speak(reply);memory(true)}else agentTalking(activeAgent,false);
+ }catch(error){
+  add("model","সংযোগে সমস্যা হয়েছে। ইন্টারনেট/সার্ভার পরীক্ষা করে আবার চেষ্টা করুন।");
+  if(status)status.textContent="● Connection error";
+  agentTalking(activeAgent,false);
+ }
+}
 function speak(t){if(!window.speechSynthesis){agentTalking(activeAgent,false);return}speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=L;
  u.onstart=()=>$("st").textContent="● ARIM is speaking";u.onend=()=>{$("st").textContent="● ARIM is ready";agentTalking(activeAgent,false)};u.onerror=()=>agentTalking(activeAgent,false);speechSynthesis.speak(u)}
 function mic(){const S=window.SpeechRecognition||window.webkitSpeechRecognition;if(!S){alert("Use Chrome for voice");return}
