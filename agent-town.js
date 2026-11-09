@@ -9,7 +9,7 @@ function addChatControls(){
  const bar=document.createElement("div");bar.className="row";bar.style.margin="0 0 8px";
  bar.innerHTML='<label style="font-size:11px;color:var(--m);white-space:nowrap">TALK TO</label><select id="arinAgentSelect" style="flex:1;background:#06121b;color:#67eaff;border:1px solid #22d3ee;border-radius:8px;padding:8px"></select><button class="btn" id="arinMute">MUTE</button>';
  names.forEach(n=>{const o=document.createElement("option");o.value=n;o.textContent=n;bar.querySelector("select").append(o)});
- bar.querySelector("select").value=active;bar.querySelector("select").onchange=e=>{active=e.target.value;localStorage.setItem("arin.agent",active);window.msgs=[];$("log").innerHTML="";$("st").textContent="● "+active+" selected"};
+ bar.querySelector("select").value=active;bar.querySelector("select").onchange=e=>{active=e.target.value;localStorage.setItem("arin.agent",active);msgs=[];$("log").innerHTML="";$("st").textContent="● "+active+" selected"};
  bar.querySelector("#arinMute").onclick=()=>{muted=!muted;bar.querySelector("#arinMute").textContent=muted?"UNMUTE":"MUTE";if(muted&&window.speechSynthesis)speechSynthesis.cancel()};
  chat.insertBefore(bar,chat.firstChild);
 }
