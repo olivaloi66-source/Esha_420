@@ -7,12 +7,31 @@ async function json(path,opts){const r=await api(path,opts);return r.json().catc
 function addChatControls(){
  const chat=$("pv"); if(!chat||$("arinAgentSelect"))return;
  const bar=document.createElement("div");bar.className="row";bar.style.margin="0 0 8px";
- bar.innerHTML='<label style="font-size:11px;color:var(--m);white-space:nowrap">TALK TO</label><select id="arinAgentSelect" style="flex:1;background:#06121b;color:#67eaff;border:1px solid #22d3ee;border-radius:8px;padding:8px"></select><button class="btn" id="arinMute">MUTE</button>';
+ bar.innerHTML='<label style="font-size:11px;color:var(--m);white-space:nowrap">TALK TO</label><select id="arinAgentSelect" style="flex:1;background:#06121b;color:#67eaff;border:1px solid #22d3ee;border-radius:8px;padding:8px"></select><button class="btn" id="arinMute">MUTE</button><label style="font-size:10px;color:var(--m)">TRANSFER TO</label><select id="arinTransferTo" style="flex:1;min-width:78px;background:#06121b;color:#67eaff;border:1px solid #22d3ee;border-radius:8px;padding:7px"></select><button class="btn" id="arinTransferBtn">SEND TASK</button>';
  names.forEach(n=>{const o=document.createElement("option");o.value=n;o.textContent=n;bar.querySelector("select").append(o)});
- bar.querySelector("select").value=active;bar.querySelector("select").onchange=e=>{active=e.target.value;localStorage.setItem("arin.agent",active);msgs=[];$("log").innerHTML="";$("st").textContent="● "+active+" selected"};
+ bar.querySelector("#arinAgentSelect").value=active;bar.querySelector("#arinAgentSelect").onchange=e=>{active=e.target.value;localStorage.setItem("arin.agent",active);msgs=[];$("log").innerHTML="";$("st").textContent="● "+active+" selected"};
+ const transferSel=bar.querySelector("#arinTransferTo");names.filter(n=>n!==active).forEach(n=>{const o=document.createElement("option");o.value=n;o.textContent=n;transferSel.append(o)});
+ bar.querySelector("#arinAgentSelect").addEventListener("change",()=>{transferSel.innerHTML="";names.filter(n=>n!==active).forEach(n=>{const o=document.createElement("option");o.value=n;o.textContent=n;transferSel.append(o)})});
+ bar.querySelector("#arinTransferBtn").onclick=transferTask;
  bar.querySelector("#arinMute").onclick=()=>{muted=!muted;bar.querySelector("#arinMute").textContent=muted?"UNMUTE":"MUTE";if(muted&&window.speechSynthesis)speechSynthesis.cancel()};
  chat.insertBefore(bar,chat.firstChild);
 }
+
+async function transferTask(){
+ const target=$("arinTransferTo").value;
+ const lastUser=[...(msgs||[])].reverse().find(m=>m.role==="user");
+ const task=lastUser&&lastUser.text;
+ if(!task){alert("আগে একটি কাজ বা প্রশ্ন লিখুন, তারপর Transfer করুন।");return}
+ $("arinTransferBtn").disabled=true;$("st").textContent="● Transferring task to "+target+"…";
+ const j=await json("/api/agents/transfer",{method:"POST",body:JSON.stringify({from:active,to:target,task})});
+ $("arinTransferBtn").disabled=false;
+ if(!j.ok){$("st").textContent="● Transfer failed";alert(j.error||"Transfer failed");return}
+ active=target;localStorage.setItem("arin.agent",active);$("arinAgentSelect").value=active;
+ add("model","↗ "+j.from_agent+" transferred the task to "+j.to_agent+"\n\n"+j.reply);
+ msgs.push({role:"model",text:j.reply});$("st").textContent="● "+target+" accepted the task";
+ const sel=$("arinTransferTo");sel.innerHTML="";names.filter(n=>n!==active).forEach(n=>{const o=document.createElement("option");o.value=n;o.textContent=n;sel.append(o)});
+}
+
 function addSettings(){
  const section=$("s-more");if(!section||$("arinAgentSettings"))return;
  const panel=document.createElement("div");panel.id="arinAgentSettings";panel.style.cssText="margin-top:18px;padding-top:12px;border-top:1px solid #1d5268";
