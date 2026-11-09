@@ -1,4 +1,4 @@
-import os, sqlite3, hashlib, secrets, subprocess, tempfile, requests
+import os, sqlite3, hashlib, secrets, subprocess, tempfile, requests, shutil
 import xml.etree.ElementTree as ET
 from flask import Flask, request, jsonify, send_from_directory, send_file
 
@@ -24,12 +24,15 @@ AGENTS = {
     "NEXUS": "You are Nexus, ARIN Town's analysis and strategy agent. Reason systematically and check assumptions."
 }
 
+DB_PATH = os.environ.get("ARIN_DB_PATH", os.path.join(os.path.dirname(os.path.abspath(__file__)), "arim.db"))
+os.makedirs(os.path.dirname(os.path.abspath(DB_PATH)), exist_ok=True)
+
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 60 * 1024 * 1024  # 60 MB uploads
 
 
 def db():
-    c = sqlite3.connect("arim.db")
+    c = sqlite3.connect(DB_PATH, timeout=20)
     c.row_factory = sqlite3.Row
     return c
 
@@ -45,7 +48,8 @@ with db() as c:
 
 
 def get_setting(k, default=""):
-    r = db().execute("select v from settings where k=?", (k,)).fetchone()
+    with db() as c:
+        r = c.execute("select v from settings where k=?", (k,)).fetchone()
     return r["v"] if r else default
 
 
@@ -340,25 +344,6 @@ def memory_add():
     return jsonify(ok=True, id=cur.lastrowid)
 
 
-@app.get("/api/memory")
-def memory_list():
-    u = current_user()
-    if not u:
-        return jsonify(error="login"), 401
-    rows = db().execute("select id,text from memory where uid=? order by id desc", (u["id"],)).fetchall()
-    return jsonify(items=[dict(r) for r in rows])
-
-
-@app.delete("/api/memory/<int:mid>")
-def memory_delete(mid):
-    u = current_user()
-    if not u:
-        return jsonify(error="login"), 401
-    with db() as c:
-        c.execute("delete from memory where id=? and uid=?", (mid, u["id"]))
-    return jsonify(ok=True)
-
-
 @app.post("/api/admin/set")
 def admin_set():
     if not ADMIN_KEY or request.headers.get("X-Admin-Key") != ADMIN_KEY:
@@ -386,27 +371,48 @@ def video_trim():
     if not u:
         return jsonify(error="login"), 401
     f = request.files.get("file")
-    if not f:
-        return jsonify(error="no file"), 400
+    if not f or not f.filename:
+        return jsonify(error="Choose a video first."), 400
+    if not (f.mimetype or "").startswith("video/"):
+        return jsonify(error="The uploaded file must be a video."), 415
     try:
         start = float(request.form.get("start") or 0)
         end = float(request.form.get("end") or 0)
     except ValueError:
-        return jsonify(error="bad time"), 400
-    d = tempfile.mkdtemp()
-    src, out = os.path.join(d, "in"), os.path.join(d, "out.mp4")
-    f.save(src)
-    cmd = ["ffmpeg", "-y", "-ss", str(start), "-i", src]
-    if end > start:
-        cmd += ["-t", str(end - start)]
-    if request.form.get("mute") == "1":
-        cmd += ["-an"]
-    cmd += ["-c:v", "libx264", "-preset", "veryfast", "-movflags", "+faststart", out]
+        return jsonify(error="Enter valid start and end times."), 400
+    if start < 0 or end <= start or end - start > 900:
+        return jsonify(error="End time must be after start time; clips are limited to 15 minutes."), 400
+    if not shutil.which("ffmpeg"):
+        return jsonify(error="Video trimming is unavailable because FFmpeg is not installed."), 501
+
+    workdir = tempfile.mkdtemp(prefix="arin-video-")
+    src, out = os.path.join(workdir, "input"), os.path.join(workdir, "trimmed.mp4")
     try:
-        subprocess.run(cmd, check=True, capture_output=True, timeout=300)
-    except Exception:
-        return jsonify(error="Video edit failed. Is ffmpeg installed?"), 500
-    return send_file(out, mimetype="video/mp4")
+        f.save(src)
+        if os.path.getsize(src) > 60 * 1024 * 1024:
+            return jsonify(error="Video exceeds the 60 MB upload limit."), 413
+        cmd = ["ffmpeg", "-nostdin", "-v", "error", "-y", "-ss", str(start), "-i", src,
+               "-t", str(end - start), "-map", "0:v:0", "-map", "0:a?",
+               "-c:v", "libx264", "-preset", "veryfast"]
+        if request.form.get("mute") == "1":
+            cmd += ["-an"]
+        else:
+            cmd += ["-c:a", "aac"]
+        cmd += ["-movflags", "+faststart", out]
+        subprocess.run(cmd, check=True, capture_output=True, timeout=240)
+        if not os.path.exists(out) or os.path.getsize(out) == 0:
+            return jsonify(error="Could not create the trimmed video."), 422
+        response = send_file(out, mimetype="video/mp4", as_attachment=True, download_name="arim-video.mp4")
+        response.call_on_close(lambda: shutil.rmtree(workdir, ignore_errors=True))
+        return response
+    except subprocess.TimeoutExpired:
+        return jsonify(error="Video processing took too long. Try a shorter clip."), 504
+    except subprocess.CalledProcessError:
+        app.logger.exception("FFmpeg video trim failed")
+        return jsonify(error="Could not trim this video. Check the selected time range and format."), 422
+    finally:
+        if not os.path.exists(out):
+            shutil.rmtree(workdir, ignore_errors=True)
 
 
 if __name__ == "__main__":
