@@ -284,7 +284,7 @@ def get_agent_preferences():
     u = current_user()
     if not u:
         return jsonify(error="login"), 401
-    count = int(get_setting("user_" + str(u["id"]) + "_team_size", "2"))
+    count = int(get_setting("user_" + str(u["id"]) + "_team_size", "6"))
     return jsonify(team_size=max(1, min(6, count)))
 
 
