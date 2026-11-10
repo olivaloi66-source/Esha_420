@@ -256,6 +256,53 @@ body[data-v="home"] #nav button{min-width:0;min-height:48px;touch-action:manipul
  body[data-v="home"] *,body[data-v="home"] *:before,body[data-v="home"] *:after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
 
+
+/* ARIN animated brand mark + responsive home-screen finish */
+body[data-v="home"] .ar-head{align-items:center;gap:10px}
+body[data-v="home"] .ar-brand{min-width:0;gap:10px}
+body[data-v="home"] .ar-mark{
+  position:relative;isolation:isolate;flex:0 0 48px;width:48px;height:48px;
+  display:grid;place-items:center;border:1px solid #ff6678;border-radius:15px;
+  background:radial-gradient(circle at 35% 25%,#ff9eaa 0,#b80d2b 22%,#26040c 68%,#08050a 100%);
+  color:#fff;font-size:34px;line-height:1;text-shadow:0 0 8px #fff,0 0 18px #ff263f;
+  box-shadow:0 0 12px #ff263f99,inset 0 0 14px #ff263f66;
+  animation:arin-logo-breathe 2.8s ease-in-out infinite;
+}
+body[data-v="home"] .ar-mark:before{
+  content:"";position:absolute;inset:-6px;border:2px solid transparent;border-top-color:#ff9aa7;
+  border-right-color:#ff3048;border-radius:19px;filter:drop-shadow(0 0 5px #ff3048);
+  animation:arin-logo-orbit 4s linear infinite;pointer-events:none;
+}
+body[data-v="home"] .ar-mark:after{
+  content:"";position:absolute;width:6px;height:6px;right:-5px;top:5px;border-radius:50%;
+  background:#fff;box-shadow:0 0 8px 3px #ff405b;animation:arin-logo-spark 1.8s ease-in-out infinite;
+}
+body[data-v="home"] .ar-brand strong{
+  display:block;letter-spacing:.14em;
+  background:linear-gradient(90deg,#ffb2bc 0%,#ff3048 35%,#fff0f2 52%,#ff3048 72%,#ff9aa8 100%);
+  background-size:220% auto;-webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:arin-wordmark-shine 5s linear infinite;
+}
+body[data-v="home"] .ar-brand small{letter-spacing:.025em}
+@keyframes arin-logo-breathe{0%,100%{transform:translateY(0) scale(.97);box-shadow:0 0 10px #ff263f77,inset 0 0 12px #ff263f55}50%{transform:translateY(-2px) scale(1.04);box-shadow:0 0 24px #ff263fcc,inset 0 0 20px #ff263f88}}
+@keyframes arin-logo-orbit{to{transform:rotate(360deg)}}
+@keyframes arin-logo-spark{0%,100%{opacity:.35;transform:scale(.7)}50%{opacity:1;transform:scale(1.25)}}
+@keyframes arin-wordmark-shine{to{background-position:220% center}}
+body[data-v="home"] .ar-hero{position:relative}
+body[data-v="home"] .ar-orb{will-change:transform,filter}
+body[data-v="home"] .ar-social,body[data-v="home"] .ar-tool{transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+body[data-v="home"] .ar-social:active,body[data-v="home"] .ar-tool:active{transform:scale(.96);border-color:#ff7182;box-shadow:0 0 20px #ff304866}
+body[data-v="home"] .ar-home-chat input:focus{outline:2px solid #ff5368;outline-offset:2px}
+@media(max-width:420px){
+ body[data-v="home"] .ar-mark{flex-basis:42px;width:42px;height:42px;font-size:30px;border-radius:13px}
+ body[data-v="home"] .ar-brand{gap:8px}
+ body[data-v="home"] .ar-brand strong{font-size:17px;letter-spacing:.1em}
+ body[data-v="home"] .ar-brand small{font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){
+ body[data-v="home"] .ar-mark,body[data-v="home"] .ar-mark:before,body[data-v="home"] .ar-mark:after,body[data-v="home"] .ar-brand strong{animation:none!important}
+}
+
 </style></head><body data-v="home">
 <div id="banner"></div>
 <div id="top"><b class="mono">ARIM AI</b><span id="ver"></span></div>
