@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: arin-ai
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --workers 2 --threads 4 --timeout 120 server:app
+    healthCheckPath: /api/version
+    envVars:
+      - key: AI_URL
+        value: https://gen.pollinations.ai/v1/chat/completions
+      - key: AI_MODEL
+        value: openai
+      - key: AI_KEY
+        sync: false
+      - key: ADMIN_KEY
+        generateValue: true
+      - key: ARIN_DB_PATH
+        value: /opt/render/project/src/arim.db
