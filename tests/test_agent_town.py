@@ -18,6 +18,7 @@ class AgentTownTests(unittest.TestCase):
             conn.row_factory = sqlite3.Row
             return conn
 
+        cls.original_db = server.db
         server.db = test_db
         with server.db() as conn:
             conn.executescript(
@@ -30,6 +31,7 @@ class AgentTownTests(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
+        server.db = cls.original_db
         cls.temp.cleanup()
 
     def setUp(self):
