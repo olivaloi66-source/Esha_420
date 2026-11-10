@@ -362,7 +362,16 @@ body[data-v="home"] #nav button{min-width:0;min-height:48px;touch-action:manipul
 
 <section class="sec" id="s-more"><div class="ttl mono">SETTINGS</div>
  <div class="row"><button class="btn" onclick="theme('')">Cyan</button><button class="btn" onclick="theme('crimson')">Crimson</button><button class="btn" onclick="theme('emerald')">Emerald</button><button class="btn" onclick="lang()" id="lg">BN</button></div>
- <div class="ttl mono" style="margin-top:16px">MEMORY <span id="mc"></span></div><div class="row"><input id="memory-input" maxlength="2000" placeholder="Save a memory... / মনে রাখো ..."><button class="btn" type="button" onclick="saveMemory()">Save</button></div><div id="mem" style="font-size:13px"></div>
+ <div class="ttl mono" style="margin-top:16px">SHARED MEMORY <span id="mc"></span></div>
+ <p style="font-size:12px;color:var(--m)">এই নোটগুলো আপনার সব এজেন্টের সঙ্গে শেয়ার হবে।</p>
+ <div class="row"><input id="memory-input" maxlength="2000" placeholder="Save a shared memory... / সবার জন্য মনে রাখো"><button class="btn" type="button" onclick="saveMemory()">Save</button></div><div id="mem" style="font-size:13px"></div>
+ <div class="ttl mono" style="margin-top:18px">PRIVATE AGENT MEMORY</div>
+ <p style="font-size:12px;color:var(--m)">প্রতিটি এজেন্টের নিজস্ব ব্যক্তিগত মেমোরি আলাদা থাকবে।</p>
+ <select id="memory-agent" onchange="loadAgentMemory()" style="width:100%;background:var(--p);border:1px solid var(--a);border-radius:8px;color:#fff;padding:11px">
+  <option value="ARIN">ARIN — Coordinator</option><option value="RONI">RONI — Developer</option><option value="DIVA">DIVA — Creative</option><option value="ZARA">ZARA — Assistant</option><option value="MAYA">MAYA — Companion</option><option value="NEXUS">NEXUS — Analyst</option>
+ </select>
+ <div class="row"><input id="agent-memory-input" maxlength="4000" placeholder="এই এজেন্টের জন্য নোট লিখুন..."><button class="btn" type="button" onclick="saveAgentMemory()">Save</button></div>
+ <div id="agent-memory-list" style="font-size:13px"></div>
  <div class="row"><button class="btn" onclick="admin()">Admin update</button></div></section>
 </div>
 <nav id="nav"><button data-g="home" onclick="go('home')">Home</button><button data-g="chat" onclick="go('chat')">Tools</button><button data-g="media" onclick="go('media')">History</button><button data-g="world" onclick="go('world')">Favorites</button><button data-g="more" onclick="go('more')">Profile</button></nav>
@@ -389,7 +398,7 @@ function closeTown(){ $('arin-town-view').hidden=true;window.scrollTo({top:0,beh
 function agentTalking(name,on){document.querySelectorAll('.town-agent').forEach(el=>el.classList.toggle('talking',on&&el.dataset.agent===name));}
 
 if(localStorage.getItem("arinAccent"))chooseColor(localStorage.getItem("arinAccent"));
-function go(v){document.body.dataset.v=v;window.scrollTo(0,0);if(v==="more")memory()}
+function go(v){document.body.dataset.v=v;window.scrollTo(0,0);if(v==="more"){memory();loadAgentMemory()}}
 function theme(t){localStorage.th=t;document.documentElement.dataset.t=t}
 function lang(){L=L.startsWith("bn")?"en-US":"bn-BD";localStorage.l=L;$("lg").textContent=L.startsWith("bn")?"BN":"EN"}
 function tab(k){$("pv").style.display=k==="v"?"block":"none";$("pa").style.display=k==="a"?"block":"none";$("pnote").style.display=k==="n"?"block":"none";
@@ -424,6 +433,30 @@ async function saveMemory(){const el=$("memory-input");const value=el?el.value.t
 async function memory(quiet){const j=await J("/api/memory");const n=(j.items||[]).length;$("mc").textContent=n+" saved";if(quiet)return;
  $("mem").innerHTML=(j.items||[]).map(i=>`<div style="padding:6px 0">${escapeHTML(i.text)} <button class="btn" style="padding:2px 8px" onclick="del(${i.id})">delete</button></div>`).join("")||"No memory yet. Say: remember ... / মনে রাখো ..."}
 async function del(id){await api("/api/memory/"+id,{method:"DELETE"});memory()}
+async function loadAgentMemory(){
+ const agent=$("memory-agent").value, box=$("agent-memory-list");
+ box.textContent="Loading...";
+ try{
+  const j=await J("/api/agents/"+encodeURIComponent(agent)+"/memory");
+  if(!j.items){box.textContent=j.error||"মেমোরি লোড করা যায়নি।";return}
+  box.innerHTML=(j.items||[]).map(i=>'<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-top:1px solid var(--b)"><span style="flex:1;white-space:pre-wrap">'+escapeHTML(i.text)+'</span><button class="btn" style="padding:3px 8px" onclick="deleteAgentMemory('+i.id+')">Delete</button></div>').join("")||"এই এজেন্টের কোনো ব্যক্তিগত মেমোরি নেই।";
+ }catch(e){box.textContent="সংযোগে সমস্যা হয়েছে।"}
+}
+async function saveAgentMemory(){
+ const agent=$("memory-agent").value,el=$("agent-memory-input"),value=el.value.trim();
+ if(!value)return;
+ try{
+  const j=await J("/api/agents/"+encodeURIComponent(agent)+"/memory",{method:"POST",body:JSON.stringify({text:value})});
+  if(!j.id){alert(j.error||"মেমোরি সেভ হয়নি।");return}
+  el.value="";await loadAgentMemory();
+ }catch(e){alert("সংযোগে সমস্যা হয়েছে।")}
+}
+async function deleteAgentMemory(id){
+ const agent=$("memory-agent").value;
+ if(!confirm("এই এজেন্টের মেমোরি মুছে ফেলবেন?"))return;
+ await api("/api/agents/"+encodeURIComponent(agent)+"/memory/"+id,{method:"DELETE"});
+ await loadAgentMemory();
+}
 async function news(){const j=await J("/api/news");$("news").innerHTML=(j.items||[]).map((t,i)=>`<div class="pr"><b>0${i+1}</b>&nbsp; ${escapeHTML(t)}</div>`).join("")||"<div style='font-size:13px;color:var(--m)'>News unavailable right now.</div>"}
 function hub(q){q=(q||"").trim();if(!q)return;$("hubout").innerHTML="Drawing...";const im=new Image();im.onload=()=>{$("hubout").innerHTML="";$("hubout").append(im)};
  im.onerror=()=>$("hubout").textContent="Could not draw this now. Try again.";im.src="https://gen.pollinations.ai/image/"+encodeURIComponent(q+", futuristic blueprint, dark background, cyan lines")}
