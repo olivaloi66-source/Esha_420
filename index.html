@@ -302,6 +302,12 @@ body[data-v=more] #s-more{display:block!important;position:fixed;left:0;right:0;
 .btn,.ar-back,.ar-pro,#top .tb,.town-agent>button,.glass-x{background:var(--bg1)}
 .tabs button,.chip,.m{background:var(--bg2)}
 .ar-head{gap:6px}.ar-menu,.ar-bell{width:38px}.ar-brand{gap:5px}.ar-brand svg{width:30px;height:30px}.ar-brand strong{font-size:clamp(14px,4.3vw,19px);letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ===== Mic button = mute toggle (white when muted) ===== */
+.ar-mic{transition:background .2s,color .2s,box-shadow .2s}
+.ar-mic .slash{display:none}
+.ar-mic.muted{background:#fff;color:#14080c;box-shadow:0 0 18px rgba(255,255,255,.5)}
+.ar-mic.muted .slash{display:block}
 </style></head><body data-v="home">
 <div id="banner"></div>
 <div id="top"><button class="tb" aria-label="Home" onclick="go('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><b class="mono">ARIN Assistant</b><span id="ver"></span></div>
@@ -345,7 +351,7 @@ body[data-v=more] #s-more{display:block!important;position:fixed;left:0;right:0;
 <div class="ar-homelog" id="homeLog" aria-live="polite"></div>
 <div class="ar-home-chat">
 <div class="ar-input"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" ><path d="M4 5h16v11H9l-5 4z"/><path d="M9 10.5h.01M12 10.5h.01M15 10.5h.01" stroke-width="3"/></svg><input id="home-ask" type="text" placeholder="Ask ARIN anything..." aria-label="Ask ARIN anything" onkeydown="if(event.key==='Enter'){event.preventDefault();sendHomeAsk()}"><button type="button" aria-label="Send message" onclick="sendHomeAsk()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" ><path d="M3 11l18-8-8 18-2-8z"/></svg></button></div>
-<button type="button" class="ar-mic" aria-label="Voice input" onclick="mic()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" ><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+<button type="button" class="ar-mic" aria-label="Mute microphone" aria-pressed="false" onclick="toggleMute()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" ><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/><path class="slash" d="M4 4l16 16"/></svg></button>
 </div>
 
 </div></section>
@@ -373,7 +379,7 @@ body[data-v=more] #s-more{display:block!important;position:fixed;left:0;right:0;
   <video id="vo" controls style="display:none;margin-top:10px"></video><a id="vd" class="btn" style="display:none;margin-top:10px" download="arim-video.mp4">Download</a></div></section>
 
 <section class="sec" id="s-more"><button class="glass-x" type="button" aria-label="Close settings" onclick="go('home')">✕</button><div class="ttl mono">SETTINGS</div>
- <div class="ar-pt">ACCENT COLOR</div><div class="ar-palette" role="group" aria-label="Choose interface color"><button class="ar-swatch" style="--sw:#ff3048" data-c="#ff3048" aria-label="Red" onclick="chooseColor('#ff3048')"></button><button class="ar-swatch" style="--sw:#ff7a18" data-c="#ff7a18" aria-label="Orange" onclick="chooseColor('#ff7a18')"></button><button class="ar-swatch" style="--sw:#ffd43b" data-c="#ffd43b" aria-label="Gold" onclick="chooseColor('#ffd43b')"></button><button class="ar-swatch" style="--sw:#28d17c" data-c="#28d17c" aria-label="Green" onclick="chooseColor('#28d17c')"></button><button class="ar-swatch" style="--sw:#22d3ee" data-c="#22d3ee" aria-label="Cyan" onclick="chooseColor('#22d3ee')"></button><button class="ar-swatch" style="--sw:#3987ff" data-c="#3987ff" aria-label="Blue" onclick="chooseColor('#3987ff')"></button><button class="ar-swatch" style="--sw:#8b5cf6" data-c="#8b5cf6" aria-label="Purple" onclick="chooseColor('#8b5cf6')"></button><button class="ar-swatch" style="--sw:#ec4899" data-c="#ec4899" aria-label="Pink" onclick="chooseColor('#ec4899')"></button><button class="ar-swatch" style="--sw:#f1f5f9" data-c="#f1f5f9" aria-label="Silver" onclick="chooseColor('#f1f5f9')"></button></div><div class="row"><button class="btn" onclick="lang()">Language: <span id="lg">BN</span></button></div><label class="row" style="align-items:center;gap:10px;font-size:14px"><input type="checkbox" id="homeChatOn" style="width:22px!important;height:22px;flex:none" onchange="setHomeChat(this.checked)"> Show chat on Home screen</label>
+ <div class="ar-pt">ACCENT COLOR</div><div class="ar-palette" role="group" aria-label="Choose interface color"><button class="ar-swatch" style="--sw:#ff3048" data-c="#ff3048" aria-label="Red" onclick="chooseColor('#ff3048')"></button><button class="ar-swatch" style="--sw:#ff7a18" data-c="#ff7a18" aria-label="Orange" onclick="chooseColor('#ff7a18')"></button><button class="ar-swatch" style="--sw:#ffd43b" data-c="#ffd43b" aria-label="Gold" onclick="chooseColor('#ffd43b')"></button><button class="ar-swatch" style="--sw:#28d17c" data-c="#28d17c" aria-label="Green" onclick="chooseColor('#28d17c')"></button><button class="ar-swatch" style="--sw:#22d3ee" data-c="#22d3ee" aria-label="Cyan" onclick="chooseColor('#22d3ee')"></button><button class="ar-swatch" style="--sw:#3987ff" data-c="#3987ff" aria-label="Blue" onclick="chooseColor('#3987ff')"></button><button class="ar-swatch" style="--sw:#8b5cf6" data-c="#8b5cf6" aria-label="Purple" onclick="chooseColor('#8b5cf6')"></button><button class="ar-swatch" style="--sw:#ec4899" data-c="#ec4899" aria-label="Pink" onclick="chooseColor('#ec4899')"></button><button class="ar-swatch" style="--sw:#f1f5f9" data-c="#f1f5f9" aria-label="Silver" onclick="chooseColor('#f1f5f9')"></button></div><div class="row"><button class="btn" onclick="lang()">Language: <span id="lg">BN</span></button></div><div class="ar-pt" style="margin-top:14px">AGENT VOICES</div><div class="row"><select id="voiceSel" onchange="setVoice(this.value)" style="flex:1"><option value="auto">Realistic voices (boys male, girls female)</option><option value="browser">Browser voice (offline)</option></select></div><label class="row" style="align-items:center;gap:10px;font-size:14px"><input type="checkbox" id="homeChatOn" style="width:22px!important;height:22px;flex:none" onchange="setHomeChat(this.checked)"> Show chat on Home screen</label>
  <div class="ttl mono" style="margin-top:16px">MEMORY <span id="mc"></span></div><div class="row"><input id="memory-input" maxlength="2000" placeholder="Save a memory... / মনে রাখো ..."><button class="btn" type="button" onclick="saveMemory()">Save</button></div><div id="mem" style="font-size:13px"></div>
  <div class="row"><button class="btn" onclick="admin()">Admin update</button></div></section>
 </div>
@@ -396,7 +402,7 @@ function toggleTown(){$('arin-town-view').hidden?openTown():closeTown()}
 function orbFx(on){document.querySelectorAll('.ar-town').forEach(b=>b.classList.toggle('orb-on',!!on))}
 function agentTalking(name,on){document.querySelectorAll('.town-agent').forEach(el=>el.classList.toggle('talking',on&&el.dataset.agent===name));document.querySelectorAll('.tbub').forEach(el=>el.classList.toggle('on',on&&el.dataset.agent===name));window._busy=!!on;orbFx(on)}
 
-chooseColor(localStorage.getItem("arinAccent")||"#ff3048");
+chooseColor(localStorage.getItem("arinAccent")||"#ff3048");try{$("voiceSel").value=getVoice()}catch(e){}
 function go(v){document.body.dataset.v=v;window.scrollTo(0,0);if(v==="more")memory()}
 function theme(t){localStorage.th=t;document.documentElement.dataset.t=t}
 function lang(){L=L.startsWith("bn")?"en-US":"bn-BD";localStorage.l=L;$("lg").textContent=L.startsWith("bn")?"BN":"EN"}
@@ -422,13 +428,58 @@ async function send(text){
   agentTalking(activeAgent,false);
  }
 }
-function speak(t){const who=activeAgent;if(!window.speechSynthesis){capStart(who,t,false);return}speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=L;
+function speakBrowser(t){const who=activeAgent;if(!window.speechSynthesis){capStart(who,t,false);return}speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=L;const g=AG_GENDER[who]||'f',fv=pickVoice(g);if(fv){u.voice=fv;u.lang=fv.lang}u.pitch=g==='m'?.82:1.12;u.rate=.96;
  u.onstart=()=>{$("st").textContent="● ARIN is speaking";capStart(who,t,true)};u.onboundary=e=>capUpdate(who,t,e.charIndex+(e.charLength||6));
  u.onend=()=>{$("st").textContent="● ARIN is ready";agentTalking(who,false);capHide()};u.onerror=()=>{agentTalking(who,false);capHide()};speechSynthesis.speak(u)}
+
+/* ===== Realistic female voice (server TTS) with browser fallback ===== */
+let _aud=null;
+const AG_VOICE={ARIN:'nova',DIVA:'shimmer',ZARA:'coral',MAYA:'sage',RONI:'onyx',NEXUS:'echo'},AG_GENDER={ARIN:'f',DIVA:'f',ZARA:'f',MAYA:'f',RONI:'m',NEXUS:'m'};
+function getVoice(){return localStorage.getItem('arinVoice')==='browser'?'browser':'auto'}
+function agentVoice(n){return AG_VOICE[n]||'nova'}
+function setVoice(v){localStorage.setItem('arinVoice',v);speak(L.startsWith('bn')?'আমি '+activeAgent+', বলুন কীভাবে সাহায্য করতে পারি।':'Hi, I am '+activeAgent+'. How can I help you?')}
+function pickVoice(g){try{const p=L.slice(0,2).toLowerCase(),vs=speechSynthesis.getVoices().filter(v=>v.lang&&v.lang.toLowerCase().startsWith(p));
+ const F=/female|woman|aria|jenny|sonia|zira|samantha|heera|priya|tanishaa|neerja|nabanita|ananya/,M=/(^|[^a-z])male|\bman\b|\bguy\b|david|mark|ryan|pradeep|bashkar|guy/;
+ const sc=v=>{const n=v.name.toLowerCase();let s=0;const f=F.test(n)&&!/(^|[^a-z])male/.test(n.replace(/female/g,'')),m=M.test(n.replace(/female/g,''));
+  if(g==='f'){if(f)s+=6;if(m)s-=8}else{if(m)s+=6;if(f)s-=8}
+  if(/neural|natural|online|wavenet|enhanced/.test(n))s+=3;if(/google/.test(n))s+=1;if(!v.localService)s+=1;return s};
+ return vs.sort((a,b)=>sc(b)-sc(a))[0]||null}catch(e){return null}}
+if(window.speechSynthesis)speechSynthesis.onvoiceschanged=()=>{};
+function speakText(t){t=String(t||'').replace(/```[\s\S]*?```/g,' ').replace(/https?:\/\/\S+/g,' ').replace(/[*_`#>~|]/g,'').replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,'').replace(/\s+/g,' ').trim();if(t.length>450){t=t.slice(0,450);const k=Math.max(t.lastIndexOf('।'),t.lastIndexOf('.'),t.lastIndexOf('?'),t.lastIndexOf('!'));if(k>150)t=t.slice(0,k+1)}return t}
+async function speak(t){const who=activeAgent,clean=speakText(t);if(!clean)return;
+ if(getVoice()==='browser'){speakBrowser(clean);return}
+ window._ttsPend=true;try{if(window.speechSynthesis)speechSynthesis.cancel();if(_aud){_aud.pause();_aud=null}
+  const r=await api('/api/tts',{method:'POST',body:JSON.stringify({text:clean,voice:agentVoice(who)})});
+  if(!r.ok)throw new Error('tts '+r.status);const b=await r.blob();if(!b.size)throw new Error('empty');
+  const url=URL.createObjectURL(b),a=new Audio(url);_aud=a;
+  const end=()=>{window._ttsPend=false;$("st").textContent="● ARIN is ready";agentTalking(who,false);capHide();try{URL.revokeObjectURL(url)}catch(e){}if(_aud===a)_aud=null};
+  a.onplay=()=>{window._ttsPend=false;$("st").textContent="● ARIN is speaking";capStart(who,clean,true)};
+  a.ontimeupdate=()=>{if(a.duration)capUpdate(who,clean,Math.floor(clean.length*a.currentTime/a.duration))};
+  a.onended=end;a.onerror=()=>{end();speakBrowser(clean)};
+  await a.play()}catch(e){window._ttsPend=false;speakBrowser(clean)}}
+
+/* ===== Hands-free: ARIN always listens; the mic button only mutes / unmutes ===== */
+let _muted=localStorage.getItem('arinMuted')==='1',_listening=false,_gest=false;const _SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+function isSpeaking(){return !!(window._ttsPend||(_aud&&!_aud.paused&&!_aud.ended)||(window.speechSynthesis&&speechSynthesis.speaking))}
+function paintMute(){document.querySelectorAll('.ar-mic').forEach(b=>{b.classList.toggle('muted',_muted);b.setAttribute('aria-pressed',String(_muted));b.setAttribute('aria-label',_muted?'Unmute microphone':'Mute microphone')});
+ const st=$("st");if(st){if(_muted)st.textContent="● ARIN is muted";else if(st.textContent.includes("muted"))st.textContent="● ARIN is ready"}}
+function toggleMute(){_gest=true;_muted=!_muted;try{localStorage.setItem('arinMuted',_muted?'1':'0')}catch(e){}
+ if(_muted){try{rec&&rec.abort()}catch(e){}_listening=false;try{orbFx(false)}catch(e){}}paintMute();if(!_muted)listenLoop()}
+function listenLoop(){if(_muted||_listening||!_SR||!_gest||window._busy||isSpeaking()||document.visibilityState!=='visible')return;
+ try{const r=new _SR();r.lang=L;r.continuous=false;r.interimResults=false;r.maxAlternatives=1;rec=r;_listening=true;
+  r.onresult=e=>{const t=((e.results[0]||[])[0]||{}).transcript;if(t&&t.trim()&&!_muted&&!isSpeaking())send(t.trim())};
+  r.onerror=e=>{if(e.error==='not-allowed'||e.error==='service-not-allowed')_gest=false};
+  r.onend=()=>{_listening=false;if(rec===r)rec=null;try{if(!window._busy)orbFx(false)}catch(e){}};
+  r.start();const st=$("st");if(st&&!isSpeaking()&&!window._busy)st.textContent="● ARIN is listening";try{orbFx(true)}catch(e){}}catch(e){_listening=false}}
+setInterval(()=>{if(_listening&&(isSpeaking()||_muted)){try{rec&&rec.abort()}catch(e){}}else listenLoop()},700);
+addEventListener('pointerdown',()=>{if(!_gest){_gest=true;listenLoop()}},true);
+try{navigator.permissions.query({name:'microphone'}).then(p=>{if(p.state==='granted')_gest=true})}catch(e){}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible'){try{rec&&rec.abort()}catch(e){}}});
+setTimeout(paintMute,0);
 function mic(){const S=window.SpeechRecognition||window.webkitSpeechRecognition;if(!S){alert("Use Chrome for voice");return}
  stopAll();rec=new S();rec.lang=L;$("st").textContent="● ARIN is listening";rec.onresult=e=>send(e.results[0][0].transcript);
  rec.onend=()=>{if(!window._busy)orbFx(false);if($("st").textContent.includes("listening"))$("st").textContent="● ARIN is ready"};orbFx(true);rec.start()}
-function stopAll(){try{rec&&rec.abort()}catch(e){}if(window.speechSynthesis)speechSynthesis.cancel();try{capHide();orbFx(false)}catch(e){}$("st").textContent="● ARIN is ready"}
+function stopAll(){try{rec&&rec.abort()}catch(e){}try{if(_aud){_aud.pause();_aud=null}}catch(e){}if(window.speechSynthesis)speechSynthesis.cancel();try{capHide();orbFx(false)}catch(e){}$("st").textContent="● ARIN is ready"}
 async function saveMemory(){const el=$("memory-input");const value=el?el.value.trim():"";if(!value)return;try{const j=await J("/api/memory",{method:"POST",body:JSON.stringify({text:value})});if(j.id){el.value="";await memory();}else alert(j.error||"Could not save memory.");}catch(e){alert("Memory could not be saved. Check your connection.");}}
 async function memory(quiet){const j=await J("/api/memory");const n=(j.items||[]).length;$("mc").textContent=n+" saved";if(quiet)return;
  $("mem").innerHTML=(j.items||[]).map(i=>`<div style="padding:6px 0">${escapeHTML(i.text)} <button class="btn" style="padding:2px 8px" onclick="del(${i.id})">delete</button></div>`).join("")||"No memory yet. Say: remember ... / মনে রাখো ..."}
@@ -505,5 +556,6 @@ function recolorAll(hex){hex=(hex||'#ff3048').toLowerCase();const sel='.ar-town 
    _rc[k]=out;delete _rp[k];if(window._ac&&window._ac.toLowerCase()===hex)document.querySelectorAll(sel).forEach(m=>{if(m.dataset.o===o)m.src=out})};
   src.src=o})}
 try{recolorAll(window._ac)}catch(e){}
+try{$("voiceSel").value=getVoice()}catch(e){}
 </script>
 </body></html>
